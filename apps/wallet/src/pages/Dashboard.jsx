@@ -6,7 +6,7 @@ import { fetchBTCBalance } from '../services/btcService';
 import { fetchETHBalance, fetchUSDTBalance } from '../services/ethService';
 import { fetchSOLBalance } from '../services/solService';
 import { NETWORKS } from '../config';
-import { ArrowUpRight, ArrowDownLeft, Pickaxe, Activity } from 'lucide-react';
+import { ArrowUpRight, ArrowDownLeft, Activity } from 'lucide-react';
 
 const Dashboard = () => {
     const { walletData } = useContext(WalletContext);
@@ -64,13 +64,13 @@ const Dashboard = () => {
                     
                     <div className="action-row">
                         <Link to="/send?token=SGC" className="btn btn-primary" style={{textDecoration: 'none'}}>
-                            <ArrowUpRight size={18} /> Envoyer
+                            <ArrowUpRight size={18} style={{marginRight: '5px'}} /> Envoyer
                         </Link>
                         <Link to="/receive?token=SGC" className="btn btn-secondary" style={{textDecoration: 'none'}}>
-                            <ArrowDownLeft size={18} /> Recevoir
+                            <ArrowDownLeft size={18} style={{marginRight: '5px'}} /> Recevoir
                         </Link>
                         <a href="http://localhost:3001" target="_blank" rel="noreferrer" className="btn btn-secondary" style={{textDecoration: 'none'}}>
-                            <Pickaxe size={18} /> Miner
+                            Miner
                         </a>
                     </div>
                 </div>
