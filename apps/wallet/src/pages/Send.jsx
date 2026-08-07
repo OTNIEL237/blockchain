@@ -5,6 +5,7 @@ import { NETWORKS } from '../config';
 import { sendETHTransaction, sendUSDTTransaction } from '../services/ethService';
 import { sendSOLTransaction } from '../services/solService';
 import { sendSGCTransaction } from '../services/sgcService';
+import { sendBTCTransaction } from '../services/btcService';
 import { toast } from 'react-toastify';
 
 const Send = () => {
@@ -42,7 +43,8 @@ const Send = () => {
                     fee: 1 // Default fee
                 });
             } else if (token === 'BTC') {
-                throw new Error("L'envoi BTC n'est pas encore implémenté via l'API.");
+                const fromAddress = walletData.wallets.BTC.address;
+                result = await sendBTCTransaction(privateKey, fromAddress, toAddress, amount);
             }
 
             toast.success(`Succès ! Transaction confirmée. Hash: ${result?.hash || result?.signature || 'N/A'}`);
