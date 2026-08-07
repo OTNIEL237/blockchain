@@ -1,4 +1,4 @@
-export const SGC_API_URL = import.meta.env.VITE_SGC_API_URL || ''; // En dev, pointe vers le proxy Vite (/api) ou l'URL configurée en prod
+export const SGC_API_URL = import.meta.env.PROD ? 'https://sangotech-backend.onrender.com' : (import.meta.env.VITE_SGC_API_URL || '');
 
 export const NETWORKS = {
     BTC: 'Bitcoin',

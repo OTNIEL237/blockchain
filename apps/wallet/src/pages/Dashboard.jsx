@@ -69,7 +69,7 @@ const Dashboard = () => {
                         <Link to="/receive?token=SGC" className="btn btn-secondary" style={{textDecoration: 'none'}}>
                             <ArrowDownLeft size={18} style={{marginRight: '5px'}} /> Recevoir
                         </Link>
-                        <a href="http://localhost:3001" target="_blank" rel="noreferrer" className="btn btn-secondary" style={{textDecoration: 'none'}}>
+                        <a href="https://sangoscan.onrender.com" target="_blank" rel="noreferrer" className="btn btn-secondary" style={{textDecoration: 'none'}}>
                             Miner
                         </a>
                     </div>
