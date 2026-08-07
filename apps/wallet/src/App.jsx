@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
 import { WalletContext } from './context/WalletContext';
 import { ToastContainer } from 'react-toastify';
@@ -18,6 +18,12 @@ const App = () => {
   const { isLocked, walletData, unlockWallet, resetWallet } = useContext(WalletContext);
   const [pin, setPin] = useState('');
   const location = useLocation();
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
 
   // S'il est verrouillé et qu'on a déjà des données en local Storage
   if (isLocked && localStorage.getItem('sango_wallet_data')) {
@@ -86,7 +92,13 @@ const App = () => {
               <NavItem to="/history" icon={Activity} label="Activité" />
             </div>
 
-            <div className="account-card-mini" style={{marginTop: 'auto'}}>
+            <div style={{marginTop: 'auto', marginBottom: '15px', display: 'flex', gap: '8px', justifyContent: 'center'}}>
+              <button onClick={() => setTheme('light')} className={`btn ${theme === 'light' ? 'btn-primary' : 'btn-secondary'}`} style={{padding: '5px 10px', fontSize: '0.75rem', flex: 1}}>Clair</button>
+              <button onClick={() => setTheme('dark')} className={`btn ${theme === 'dark' ? 'btn-primary' : 'btn-secondary'}`} style={{padding: '5px 10px', fontSize: '0.75rem', flex: 1}}>Sombre</button>
+              <button onClick={() => setTheme('dim')} className={`btn ${theme === 'dim' ? 'btn-primary' : 'btn-secondary'}`} style={{padding: '5px 10px', fontSize: '0.75rem', flex: 1}}>Dim</button>
+            </div>
+
+            <div className="account-card-mini">
               <div style={{flex: 1, overflow: 'hidden'}}>
                 <div style={{fontSize: '0.85rem', color: 'var(--muted-text)'}}>Réseau Actif</div>
                 <div style={{fontWeight: 'bold', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden'}}>
