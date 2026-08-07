@@ -57,36 +57,42 @@ const Send = () => {
     if (!walletData) return null;
 
     return (
-        <div className="container" style={{maxWidth: '600px', margin: '0 auto', padding: '2rem'}}>
-            <h2>Envoyer {NETWORKS[token]}</h2>
-            <form onSubmit={handleSend} style={{marginTop: '2rem'}}>
-                <div style={{marginBottom: '1rem'}}>
-                    <label style={{display:'block', marginBottom:'5px'}}>Adresse de destination :</label>
-                    <input 
-                        type="text" 
-                        value={toAddress} 
-                        onChange={e => setToAddress(e.target.value)} 
-                        required 
-                        style={{width:'100%', padding:'8px'}}
-                    />
-                </div>
-                <div style={{marginBottom: '1rem'}}>
-                    <label style={{display:'block', marginBottom:'5px'}}>Montant ({token}) :</label>
-                    <input 
-                        type="number" 
-                        step="any"
-                        value={amount} 
-                        onChange={e => setAmount(e.target.value)} 
-                        required 
-                        style={{width:'100%', padding:'8px'}}
-                    />
-                </div>
-                <button type="submit" disabled={loading} className="btn-primary" style={{padding:'10px 20px', background:'#007bff', color:'white', border:'none', borderRadius:'4px'}}>
-                    {loading ? 'Traitement en cours...' : "Confirmer l'Envoi"}
-                </button>
-            </form>
+        <div>
+            <h1 className="page-title">Envoyer {NETWORKS[token]}</h1>
+            
+            <div className="card" style={{maxWidth: '600px'}}>
+                <form onSubmit={handleSend}>
+                    <div style={{marginBottom: '1.5rem'}}>
+                        <label style={{display:'block', marginBottom:'8px', fontWeight: 'bold', color: 'var(--muted-text)'}}>Adresse de destination :</label>
+                        <input 
+                            type="text" 
+                            value={toAddress} 
+                            onChange={e => setToAddress(e.target.value)} 
+                            required 
+                            className="input-field"
+                            placeholder={`Collez l'adresse ${token} ici`}
+                        />
+                    </div>
+                    <div style={{marginBottom: '2rem'}}>
+                        <label style={{display:'block', marginBottom:'8px', fontWeight: 'bold', color: 'var(--muted-text)'}}>Montant ({token}) :</label>
+                        <input 
+                            type="number" 
+                            step="any"
+                            value={amount} 
+                            onChange={e => setAmount(e.target.value)} 
+                            required 
+                            className="input-field"
+                            placeholder="0.00"
+                        />
+                    </div>
+                    <button type="submit" disabled={loading} className="btn btn-primary" style={{width: '100%', padding: '12px'}}>
+                        {loading ? 'Traitement en cours...' : "Confirmer l'Envoi"}
+                    </button>
+                </form>
+            </div>
+            
             <div style={{marginTop: '2rem'}}>
-                <button onClick={() => navigate('/')} style={{padding:'5px 10px'}}>Retour</button>
+                <button onClick={() => navigate(-1)} className="btn btn-secondary">Retour</button>
             </div>
         </div>
     );

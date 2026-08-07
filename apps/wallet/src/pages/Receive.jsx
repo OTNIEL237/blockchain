@@ -3,6 +3,8 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
 import { WalletContext } from '../context/WalletContext';
 import { NETWORKS } from '../config';
+import { Copy } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 const Receive = () => {
     const [searchParams] = useSearchParams();
@@ -15,28 +17,40 @@ const Receive = () => {
     const actualTokenKey = token === 'USDT' ? 'ETH' : token;
     const address = walletData.wallets[actualTokenKey].address;
 
+    const handleCopy = () => {
+        navigator.clipboard.writeText(address);
+        toast.success('Adresse copiée dans le presse-papier !');
+    };
+
     return (
-        <div className="container" style={{maxWidth: '600px', margin: '0 auto', padding: '2rem', textAlign: 'center'}}>
-            <h2>Recevoir {NETWORKS[token]}</h2>
-            <p>Utilisez l'adresse ci-dessous pour recevoir vos {token}.</p>
+        <div>
+            <h1 className="page-title">Recevoir {NETWORKS[token]}</h1>
             
-            <div style={{margin: '2rem auto', padding: '1rem', background: 'white', display: 'inline-block', borderRadius: '10px'}}>
-                <QRCodeSVG value={address} size={200} />
+            <div className="card" style={{maxWidth: '500px', textAlign: 'center'}}>
+                <p style={{color: 'var(--muted-text)', marginBottom: '2rem'}}>
+                    Utilisez l'adresse ci-dessous pour recevoir vos {token}.
+                </p>
+                
+                <div style={{margin: '0 auto 2rem', padding: '1rem', background: 'white', display: 'inline-block', borderRadius: '10px'}}>
+                    <QRCodeSVG value={address} size={200} />
+                </div>
+                
+                <div style={{background: 'var(--background)', padding: '1rem', borderRadius: '8px', wordBreak: 'break-all', marginBottom: '1rem', border: '1px solid var(--border-color)'}}>
+                    <strong style={{color: 'var(--text-color)'}}>{address}</strong>
+                </div>
+                
+                <button 
+                    onClick={handleCopy} 
+                    className="btn btn-primary"
+                    style={{width: '100%', padding: '12px', justifyContent: 'center'}}
+                >
+                    <Copy size={18} style={{marginRight: '8px'}} />
+                    Copier l'adresse
+                </button>
             </div>
-            
-            <div style={{background: '#f8f9fa', padding: '1rem', borderRadius: '8px', wordBreak: 'break-all'}}>
-                <strong>{address}</strong>
-            </div>
-            
-            <button 
-                onClick={() => navigator.clipboard.writeText(address)} 
-                style={{marginTop: '1rem', padding:'8px 16px', cursor:'pointer'}}
-            >
-                Copier l'adresse
-            </button>
 
             <div style={{marginTop: '2rem'}}>
-                <button onClick={() => navigate('/')} style={{padding:'5px 10px'}}>Retour au Dashboard</button>
+                <button onClick={() => navigate(-1)} className="btn btn-secondary">Retour</button>
             </div>
         </div>
     );

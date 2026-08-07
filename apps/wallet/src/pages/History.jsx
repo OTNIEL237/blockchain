@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { WalletContext } from '../context/WalletContext';
 import { fetchSGCHistory } from '../services/sgcService';
+import { Activity, ExternalLink } from 'lucide-react';
 
 const History = () => {
     const { walletData } = useContext(WalletContext);
@@ -15,8 +16,6 @@ const History = () => {
         const loadHistory = async () => {
             setLoading(true);
             try {
-                // Pour l'instant, on charge l'historique SGC (local/Render)
-                // Dans une version complète, on ferait des Promise.all sur Etherscan, Solscan, Blockstream
                 const sgcAddr = walletData.wallets.SGC.address;
                 const sgcTxs = await fetchSGCHistory(sgcAddr);
                 
@@ -25,9 +24,6 @@ const History = () => {
                     network: 'SGC',
                     type: tx.fromAddress === sgcAddr ? 'Envoyé' : 'Reçu'
                 }));
-
-                // Simulation pour Etherscan / Autres réseaux API publiques
-                // const ethRes = await fetch(`https://api.etherscan.io/api?module=account&action=txlist&address=${walletData.wallets.ETH.address}&sort=desc`);
                 
                 setHistory(formattedTxs);
             } catch (error) {
@@ -42,35 +38,44 @@ const History = () => {
     if (!walletData) return null;
 
     return (
-        <div className="container" style={{maxWidth: '800px', margin: '0 auto', padding: '2rem'}}>
-            <h2>Historique des Transactions (SGC)</h2>
-            <p style={{fontSize: '0.9rem', color: '#666'}}>
-                * L'historique multi-réseaux (BTC, ETH, SOL) nécessite des clés d'API (ex: Etherscan) pour fonctionner sans limitation.
+        <div>
+            <h1 className="page-title">Historique des Transactions</h1>
+            <p style={{fontSize: '0.9rem', color: 'var(--muted-text)', marginBottom: '2rem'}}>
+                * L'historique multi-réseaux (BTC, ETH, SOL) nécessite des clés d'API (ex: Etherscan) pour fonctionner sans limitation. Actuellement, seul le réseau SGC est affiché.
             </p>
             
-            {loading ? (
-                <p>Chargement des transactions...</p>
-            ) : history.length === 0 ? (
-                <p>Aucune transaction trouvée.</p>
-            ) : (
-                <ul style={{listStyle: 'none', padding: 0}}>
-                    {history.map((tx, idx) => (
-                        <li key={idx} style={{borderBottom:'1px solid #eee', padding:'1rem 0', display:'flex', justifyContent:'space-between'}}>
-                            <div>
-                                <strong style={{color: tx.type === 'Envoyé' ? 'red' : 'green'}}>{tx.type}</strong>
-                                <div style={{fontSize:'0.85rem', color:'#555'}}>{new Date(tx.timestamp).toLocaleString()}</div>
-                                <div style={{fontSize:'0.8rem', color:'#999'}}>Hash: {tx.hash}</div>
+            <div className="card">
+                {loading ? (
+                    <p style={{color: 'var(--muted-text)'}}>Chargement des transactions...</p>
+                ) : history.length === 0 ? (
+                    <p style={{color: 'var(--muted-text)'}}>Aucune transaction trouvée.</p>
+                ) : (
+                    <div className="activity-list">
+                        {history.map((tx, idx) => (
+                            <div key={idx} className="activity-item">
+                                <div className="activity-icon">
+                                    <Activity size={20} color={tx.type === 'Envoyé' ? 'var(--danger-color)' : 'var(--primary-color)'} />
+                                </div>
+                                <div>
+                                    <div style={{fontWeight: '600'}}>{tx.type} {tx.network}</div>
+                                    <div style={{fontSize: '0.85rem', color: 'var(--muted-text)'}}>{new Date(tx.timestamp).toLocaleString()}</div>
+                                    <div style={{fontSize: '0.75rem', color: 'var(--muted-text)', marginTop: '4px'}}>
+                                        Hash: {tx.hash}
+                                    </div>
+                                </div>
+                                <div style={{marginLeft: 'auto', textAlign: 'right'}}>
+                                    <div style={{fontWeight: 'bold', color: tx.type === 'Envoyé' ? 'var(--danger-color)' : 'var(--primary-color)', fontSize: '1.2rem'}}>
+                                        {tx.type === 'Envoyé' ? '-' : '+'}{tx.amount}
+                                    </div>
+                                </div>
                             </div>
-                            <div style={{fontWeight: 'bold', fontSize: '1.2rem'}}>
-                                {tx.amount} {tx.network}
-                            </div>
-                        </li>
-                    ))}
-                </ul>
-            )}
+                        ))}
+                    </div>
+                )}
+            </div>
             
             <div style={{marginTop: '2rem'}}>
-                <button onClick={() => navigate('/')} className="btn-secondary" style={{padding:'5px 10px'}}>Retour au Dashboard</button>
+                <button onClick={() => navigate('/')} className="btn btn-secondary">Retour au Dashboard</button>
             </div>
         </div>
     );
