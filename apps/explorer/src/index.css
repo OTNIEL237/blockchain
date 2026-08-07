@@ -1,0 +1,226 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --primary-color: #0784c3;
+  --bg-color: #f8f9fa;
+  --text-color: #333;
+  --muted-text: #6c757d;
+  --border-color: #e9ecef;
+  --card-bg: #fff;
+  --input-bg: #fff;
+  --badge-bg: #e9ecef;
+  --badge-text: #495057;
+  --th-color: #6c757d;
+  --icon-bg: #f8f9fa;
+}
+
+[data-theme="dim"] {
+  --primary-color: #00d2ff;
+  --bg-color: #111a2e;
+  --text-color: #f8f9fa;
+  --muted-text: #8c98a4;
+  --border-color: #222d46;
+  --card-bg: #172138;
+  --input-bg: #111a2e;
+  --badge-bg: #222d46;
+  --badge-text: #8c98a4;
+  --th-color: #8c98a4;
+  --icon-bg: #111a2e;
+}
+
+[data-theme="dark"] {
+  --primary-color: #00d2ff;
+  --bg-color: #000000;
+  --text-color: #e2e8f0;
+  --muted-text: #94a3b8;
+  --border-color: #27272a;
+  --card-bg: #111111;
+  --input-bg: #18181b;
+  --badge-bg: #27272a;
+  --badge-text: #a1a1aa;
+  --th-color: #a1a1aa;
+  --icon-bg: #27272a;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  line-height: 1.5;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+header {
+  background-color: var(--card-bg);
+  border-bottom: 1px solid var(--border-color);
+  padding: 1rem 0;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border: 1px solid var(--border-color);
+}
+
+.card h2 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th, .table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.9rem;
+}
+
+.table th {
+  font-weight: 600;
+  color: var(--th-color);
+}
+
+.badge {
+  background-color: var(--badge-bg);
+  color: var(--badge-text);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.link {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.search-box {
+  display: flex;
+  margin-bottom: 2rem;
+}
+
+.search-box input {
+  flex: 1;
+  padding: 0.75rem;
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: 4px 0 0 4px;
+  font-size: 1rem;
+  outline: none;
+}
+
+.search-box input:focus {
+  border-color: var(--primary-color);
+}
+
+.search-box button {
+  padding: 0.75rem 1.5rem;
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 0 4px 4px 0;
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.list-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.list-item:last-child {
+  border-bottom: none;
+}
+
+.list-item-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex: 1.2;
+}
+
+.list-item-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  background-color: var(--icon-bg);
+  border: 1px solid var(--border-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.list-item-middle {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.list-item-right {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.flash-update {
+  animation: flashGreen 1s ease-out;
+}
+
+@keyframes flashGreen {
+  0% { background-color: rgba(88, 225, 146, 0.3); }
+  100% { background-color: transparent; }
+}
