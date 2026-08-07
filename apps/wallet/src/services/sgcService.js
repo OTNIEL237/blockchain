@@ -45,3 +45,21 @@ export const sendSGCTransaction = async (transaction) => {
         throw error;
     }
 };
+
+export const mineBlock = async (rewardAddress) => {
+    try {
+        const response = await fetch(`${SGC_API_URL}/api/mine`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ rewardAddress })
+        });
+        if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.message || "Erreur lors du minage");
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Erreur minage:", error);
+        throw error;
+    }
+};

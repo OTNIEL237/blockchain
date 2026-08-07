@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { WalletContext } from '../context/WalletContext';
-import { fetchSGCBalance, fetchSGCHistory } from '../services/sgcService';
+import { fetchSGCBalance, fetchSGCHistory, mineBlock } from '../services/sgcService';
 import { fetchBTCBalance } from '../services/btcService';
 import { fetchETHBalance, fetchUSDTBalance } from '../services/ethService';
 import { fetchSOLBalance } from '../services/solService';
@@ -14,40 +14,54 @@ const Dashboard = () => {
         SGC: '0.00', BTC: '0.00', ETH: '0.00', USDT: '0.00', SOL: '0.00'
     });
     const [loading, setLoading] = useState(true);
+    const [isMining, setIsMining] = useState(false);
     const [recentTx, setRecentTx] = useState([]);
 
-    useEffect(() => {
+    const loadData = async () => {
         if (!walletData) return;
+        setLoading(true);
+        try {
+            const sgcAddr = walletData.wallets.SGC.address;
+            const [sgc, btc, eth, usdt, sol, sgcTxs] = await Promise.all([
+                fetchSGCBalance(sgcAddr),
+                fetchBTCBalance(walletData.wallets.BTC.address),
+                fetchETHBalance(walletData.wallets.ETH.address),
+                fetchUSDTBalance(walletData.wallets.ETH.address),
+                fetchSOLBalance(walletData.wallets.SOL.address),
+                fetchSGCHistory(sgcAddr)
+            ]);
+            
+            setBalances({ SGC: sgc, BTC: btc, ETH: eth, USDT: usdt, SOL: sol });
+            
+            // Prendre les 3 dernières transactions
+            const formattedTxs = sgcTxs.slice(0, 3).map(tx => ({
+                ...tx,
+                type: tx.fromAddress === sgcAddr ? 'Envoyé' : 'Reçu'
+            }));
+            setRecentTx(formattedTxs);
+        } catch (error) {
+            console.error("Erreur chargement dashboard", error);
+        }
+        setLoading(false);
+    };
 
-        const loadData = async () => {
-            setLoading(true);
-            try {
-                const sgcAddr = walletData.wallets.SGC.address;
-                const [sgc, btc, eth, usdt, sol, sgcTxs] = await Promise.all([
-                    fetchSGCBalance(sgcAddr),
-                    fetchBTCBalance(walletData.wallets.BTC.address),
-                    fetchETHBalance(walletData.wallets.ETH.address),
-                    fetchUSDTBalance(walletData.wallets.ETH.address),
-                    fetchSOLBalance(walletData.wallets.SOL.address),
-                    fetchSGCHistory(sgcAddr)
-                ]);
-                
-                setBalances({ SGC: sgc, BTC: btc, ETH: eth, USDT: usdt, SOL: sol });
-                
-                // Prendre les 3 dernières transactions
-                const formattedTxs = sgcTxs.slice(0, 3).map(tx => ({
-                    ...tx,
-                    type: tx.fromAddress === sgcAddr ? 'Envoyé' : 'Reçu'
-                }));
-                setRecentTx(formattedTxs);
-            } catch (error) {
-                console.error("Erreur chargement dashboard", error);
-            }
-            setLoading(false);
-        };
-
+    useEffect(() => {
         loadData();
     }, [walletData]);
+
+    const handleMine = async () => {
+        if (!walletData || isMining) return;
+        setIsMining(true);
+        try {
+            const rewardAddress = walletData.wallets.SGC.address;
+            await mineBlock(rewardAddress);
+            alert('🎉 Bloc miné avec succès ! Vous avez reçu la récompense.');
+            await loadData();
+        } catch (error) {
+            alert('❌ Erreur lors du minage : ' + error.message);
+        }
+        setIsMining(false);
+    };
 
     if (!walletData) return null;
 
@@ -69,9 +83,9 @@ const Dashboard = () => {
                         <Link to="/receive?token=SGC" className="btn btn-secondary" style={{textDecoration: 'none'}}>
                             <ArrowDownLeft size={18} style={{marginRight: '5px'}} /> Recevoir
                         </Link>
-                        <a href="https://sangotech-backend.onrender.com" target="_blank" rel="noreferrer" className="btn btn-secondary" style={{textDecoration: 'none'}}>
-                            Miner
-                        </a>
+                        <button onClick={handleMine} disabled={isMining} className="btn btn-secondary" style={{textDecoration: 'none', cursor: isMining ? 'not-allowed' : 'pointer'}}>
+                            {isMining ? '⏳ Minage...' : '⛏️ Miner'}
+                        </button>
                     </div>
                 </div>
 
