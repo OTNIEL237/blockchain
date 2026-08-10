@@ -54,7 +54,7 @@ const CreateWallet = () => {
                             Générez votre phrase secrète de 12 mots. Elle est la clé unique pour accéder à vos fonds sur toutes les blockchains (SGC, BTC, ETH, SOL).
                         </p>
                         <button onClick={handleGenerate} className="btn btn-primary" style={{width: '100%'}}>
-                            Générer mes 12 mots
+                            Créer mon portefeuille
                         </button>
                         <div style={{marginTop: '20px'}}>
                             <Link to="/import" style={{color: 'var(--primary-color)', textDecoration: 'none', fontWeight: '500'}}>

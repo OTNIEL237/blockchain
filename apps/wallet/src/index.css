@@ -287,22 +287,26 @@ body {
 @media (max-width: 768px) {
   .app-layout {
     flex-direction: column;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
   }
   .sidebar {
     width: 100%;
-    height: 80px;
+    height: 65px;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    padding: 0 1.5rem;
+    padding: 0 1.25rem;
     border-right: none;
     border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
   }
   .sidebar-logo {
     margin-bottom: 0;
   }
   .nav-menu {
-    display: none; /* In a real app, use a hamburger menu or bottom nav */
+    display: none;
   }
   .account-card-mini {
     display: none;
@@ -312,20 +316,34 @@ body {
   .mobile-nav {
     display: flex;
     justify-content: space-around;
+    align-items: center;
     background-color: var(--sidebar-bg);
     border-top: 1px solid var(--border-color);
-    padding: 1rem 0;
+    padding: 0.5rem 0;
     position: fixed;
     bottom: 0;
+    left: 0;
     width: 100%;
-    z-index: 10;
+    z-index: 1000;
+    height: 65px;
+    box-shadow: 0 -5px 15px rgba(0,0,0,0.4);
+    backdrop-filter: blur(10px);
   }
   
   .main-content {
-    padding: 1.5rem 1rem 6rem 1rem;
+    padding: 1.25rem 1rem 110px 1rem; /* Extra bottom padding so mobile bottom nav never hides any card/box */
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
+
+  .content-wrapper {
+    width: 100%;
+    padding-bottom: 20px;
+  }
+
   .dashboard-grid {
     grid-template-columns: 1fr;
+    gap: 1.25rem;
   }
 
   .card {
@@ -334,15 +352,19 @@ body {
 
   .action-row {
     flex-wrap: wrap;
+    gap: 0.5rem;
   }
 
   .action-row .btn {
     flex: 1 1 45%;
+    font-size: 0.85rem;
+    padding: 0.6rem 0.5rem;
   }
 
   .page-title {
     font-size: 1.5rem;
     word-break: break-word;
+    margin-bottom: 1.25rem;
   }
 
   .activity-item {
@@ -370,6 +392,7 @@ body {
     justify-content: center;
   }
 }
+
 @media (min-width: 769px) {
   .mobile-nav {
     display: none;
@@ -381,13 +404,17 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  width: 100vw;
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
+  padding: 1.5rem 1rem;
   background-color: var(--bg-color);
+  overflow-y: auto;
 }
+
 .auth-card {
   background-color: var(--card-bg);
-  padding: 3rem;
+  padding: 2.5rem 2rem;
   border-radius: 24px;
   width: 100%;
   max-width: 450px;
@@ -395,3 +422,11 @@ body {
   text-align: center;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
+
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 1.75rem 1.25rem;
+    border-radius: 18px;
+  }
+}
+
