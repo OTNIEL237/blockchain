@@ -1,7 +1,7 @@
 import { Connection, PublicKey, SystemProgram, Transaction, sendAndConfirmTransaction, Keypair } from '@solana/web3.js';
 import { Buffer } from 'buffer';
 
-const RPC_URL = import.meta.env.VITE_SOL_RPC_URL || 'https://api.mainnet-beta.solana.com';
+const RPC_URL = import.meta.env.VITE_SOL_RPC_URL || 'https://solana-rpc.publicnode.com';
 const connection = new Connection(RPC_URL, 'confirmed');
 
 export const fetchSOLBalance = async (address) => {
