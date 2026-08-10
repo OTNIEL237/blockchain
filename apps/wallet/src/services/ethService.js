@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 
 // RPC public pour Ethereum Mainnet (ou Sepolia si configuré)
-const RPC_URL = import.meta.env.VITE_ETH_RPC_URL || 'https://eth.llamarpc.com';
+const RPC_URL = import.meta.env.VITE_ETH_RPC_URL || 'https://ethereum-rpc.publicnode.com';
 const provider = new ethers.JsonRpcProvider(RPC_URL);
 
 // Contract ABI minimum pour USDT (ERC20)
