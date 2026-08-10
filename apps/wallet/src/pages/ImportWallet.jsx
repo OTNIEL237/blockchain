@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { validateMnemonic, deriveWalletsFromMnemonic } from '../wallet/hdEngine';
 import { saveWalletData } from '../wallet/storage';
 import { WalletContext } from '../context/WalletContext';
-import { Wallet } from 'lucide-react';
+import { Wallet, ShieldCheck } from 'lucide-react';
 
 const ImportWallet = () => {
     const [mnemonic, setMnemonic] = useState('');
@@ -38,8 +38,8 @@ const ImportWallet = () => {
     return (
         <div className="auth-container">
             <div className="auth-card">
-                <Wallet size={48} color="#58e192" style={{margin:'0 auto 20px'}} />
-                <h2 style={{marginBottom: '10px'}}>Importer un Wallet</h2>
+                <ShieldCheck size={56} strokeWidth={2} color="var(--primary-color)" style={{margin:'0 auto 15px'}} />
+                <h2 className="logo-text" style={{marginBottom: '15px', textAlign: 'center', fontSize: '1.8rem'}}>Importer un Wallet</h2>
                 <p style={{color: 'var(--muted-text)', marginBottom: '20px', fontSize: '0.9rem'}}>
                     Sango Wallet utilise le standard sécurisé BIP39. Importez toutes vos clés (SGC, BTC, ETH, SOL) avec votre phrase secrète de 12 mots.
                 </p>

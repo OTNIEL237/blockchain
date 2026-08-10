@@ -3,7 +3,7 @@ import { Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
 import { WalletContext } from './context/WalletContext';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { LayoutDashboard, Send as SendIcon, ArrowDownToLine, Activity, LogOut, Wallet, ArrowDownUp, Sun, Moon, Sparkles } from 'lucide-react';
+import { LayoutDashboard, Send as SendIcon, ArrowDownToLine, Activity, LogOut, Wallet, ArrowDownUp, Sun, Moon, Sparkles, ShieldCheck } from 'lucide-react';
 
 import CreateWallet from './pages/CreateWallet';
 import ImportWallet from './pages/ImportWallet';
@@ -32,9 +32,9 @@ const App = () => {
       <div className="auth-container">
         <ToastContainer position="top-right" autoClose={3000} theme="dark" />
         <div className="auth-card">
-          <Wallet size={48} color="#58e192" style={{margin:'0 auto 20px'}} />
-          <h2 style={{marginBottom: '20px'}}>Sango Wallet</h2>
-          <p style={{color: 'var(--muted-text)', marginBottom: '20px'}}>Entrez votre code PIN pour déverrouiller</p>
+          <ShieldCheck size={56} strokeWidth={2} color="var(--primary-color)" style={{margin:'0 auto 15px'}} />
+          <h2 className="logo-text" style={{marginBottom: '25px', textAlign: 'center', fontSize: '1.8rem'}}>Sango Wallet</h2>
+          <p style={{color: 'var(--muted-text)', marginBottom: '20px', textAlign: 'center'}}>Entrez votre code PIN pour déverrouiller</p>
           <input 
             type="password" 
             placeholder="Code PIN" 
@@ -82,8 +82,8 @@ const App = () => {
           {/* Desktop Sidebar */}
           <div className="sidebar">
             <div className="sidebar-logo">
-              <div className="logo-icon"><Wallet size={24} /></div>
-              <h2>Sango Wallet</h2>
+              <div className="logo-icon"><ShieldCheck size={28} strokeWidth={2.5} color="var(--primary-color)" /></div>
+              <h2 className="logo-text">Sango Wallet</h2>
             </div>
             
             <div className="nav-menu">

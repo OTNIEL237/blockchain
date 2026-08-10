@@ -71,20 +71,19 @@ body {
 .sidebar-logo {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   margin-bottom: 3rem;
 }
-.sidebar-logo h2 {
-  font-size: 1.5rem;
-  font-weight: 700;
+.logo-text {
+  font-size: 1.3rem;
+  font-weight: 800;
   letter-spacing: -0.5px;
+  background: linear-gradient(90deg, #58e192, #29a060);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
 }
 .logo-icon {
-  background-color: var(--primary-color);
-  color: #000;
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
   display: flex;
   justify-content: center;
   align-items: center;

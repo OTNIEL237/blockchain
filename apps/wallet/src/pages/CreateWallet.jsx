@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { generateMnemonic, deriveWalletsFromMnemonic } from '../wallet/hdEngine';
 import { saveWalletData } from '../wallet/storage';
 import { WalletContext } from '../context/WalletContext';
-import { Wallet, Copy, Check } from 'lucide-react';
+import { Wallet, Copy, Check, ShieldCheck } from 'lucide-react';
 
 const CreateWallet = () => {
     const [step, setStep] = useState(1);
@@ -45,8 +45,8 @@ const CreateWallet = () => {
     return (
         <div className="auth-container">
             <div className="auth-card">
-                <Wallet size={48} color="#58e192" style={{margin:'0 auto 20px'}} />
-                <h2 style={{marginBottom: '10px'}}>Nouveau Wallet</h2>
+                <ShieldCheck size={56} strokeWidth={2} color="var(--primary-color)" style={{margin:'0 auto 15px'}} />
+                <h2 className="logo-text" style={{marginBottom: '15px', textAlign: 'center', fontSize: '1.8rem'}}>Nouveau Wallet</h2>
 
                 {step === 1 && (
                     <div>
