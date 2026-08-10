@@ -94,31 +94,17 @@ const App = () => {
               <NavItem to="/history" icon={Activity} label="Activité" />
             </div>
 
-            <div className="theme-switcher">
-              <button 
-                onClick={() => setTheme('light')} 
-                className={`theme-btn ${theme === 'light' ? 'active' : ''}`}
-                title="Mode Clair"
+            <div className="theme-dropdown-container">
+              <select 
+                value={theme} 
+                onChange={(e) => setTheme(e.target.value)} 
+                className="theme-dropdown"
+                aria-label="Choisir le thème"
               >
-                <Sun size={14} />
-                <span>Clair</span>
-              </button>
-              <button 
-                onClick={() => setTheme('dark')} 
-                className={`theme-btn ${theme === 'dark' ? 'active' : ''}`}
-                title="Mode Sombre"
-              >
-                <Moon size={14} />
-                <span>Sombre</span>
-              </button>
-              <button 
-                onClick={() => setTheme('dim')} 
-                className={`theme-btn ${theme === 'dim' ? 'active' : ''}`}
-                title="Mode Dim"
-              >
-                <Sparkles size={14} />
-                <span>Dim</span>
-              </button>
+                <option value="dark">🌙 Mode Sombre</option>
+                <option value="light">☀️ Mode Clair</option>
+                <option value="dim">✨ Mode Dim</option>
+              </select>
             </div>
 
             <div className="account-card-mini">
