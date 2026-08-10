@@ -25,7 +25,7 @@ export const sendSOLTransaction = async (privateKeyHex, toAddress, amountSol) =>
             SystemProgram.transfer({
                 fromPubkey: fromKeypair.publicKey,
                 toPubkey,
-                lamports: amountSol * 1e9
+                lamports: Math.floor(parseFloat(amountSol) * 1e9)
             })
         );
 
