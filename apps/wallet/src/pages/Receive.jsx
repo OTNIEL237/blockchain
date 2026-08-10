@@ -7,8 +7,8 @@ import { Copy } from 'lucide-react';
 import { toast } from 'react-toastify';
 
 const Receive = () => {
-    const [searchParams] = useSearchParams();
-    const token = searchParams.get('token') || 'SGC';
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [token, setToken] = React.useState(searchParams.get('token') || 'SGC');
     const { walletData } = useContext(WalletContext);
     const navigate = useNavigate();
     
@@ -27,6 +27,25 @@ const Receive = () => {
             <h1 className="page-title">Recevoir {NETWORKS[token]}</h1>
             
             <div className="card" style={{maxWidth: '500px', textAlign: 'center'}}>
+                <div style={{marginBottom: '1.5rem', textAlign: 'left'}}>
+                    <label style={{display:'block', marginBottom:'8px', fontWeight: 'bold', color: 'var(--muted-text)'}}>Actif à recevoir :</label>
+                    <select 
+                        value={token} 
+                        onChange={(e) => {
+                            setToken(e.target.value);
+                            setSearchParams({ token: e.target.value });
+                        }} 
+                        className="input-field"
+                        style={{appearance: 'auto', padding: '12px'}}
+                    >
+                        <option value="SGC">Sango Coin (SGC)</option>
+                        <option value="BTC">Bitcoin (BTC)</option>
+                        <option value="ETH">Ethereum (ETH)</option>
+                        <option value="USDT">Tether (USDT)</option>
+                        <option value="SOL">Solana (SOL)</option>
+                    </select>
+                </div>
+                
                 <p style={{color: 'var(--muted-text)', marginBottom: '2rem'}}>
                     Utilisez l'adresse ci-dessous pour recevoir vos {token}.
                 </p>

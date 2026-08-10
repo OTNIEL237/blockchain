@@ -89,13 +89,13 @@ const Dashboard = () => {
 
             {/* Top Action Buttons */}
             <div className="top-actions-row">
-                <Link to="/send?token=SGC" className="top-action-btn">
+                <Link to="/send" className="top-action-btn">
                     <div className="top-action-icon">
                         <ArrowUpRight size={24} />
                     </div>
                     Envoyer
                 </Link>
-                <Link to="/receive?token=SGC" className="top-action-btn">
+                <Link to="/receive" className="top-action-btn">
                     <div className="top-action-icon">
                         <ArrowDownLeft size={24} />
                     </div>

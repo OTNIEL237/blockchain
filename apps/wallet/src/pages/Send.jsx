@@ -9,8 +9,8 @@ import { sendBTCTransaction, fetchBTCBalance } from '../services/btcService';
 import { toast } from 'react-toastify';
 
 const Send = () => {
-    const [searchParams] = useSearchParams();
-    const token = searchParams.get('token') || 'SGC';
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [token, setToken] = useState(searchParams.get('token') || 'SGC');
     const { walletData } = useContext(WalletContext);
     const navigate = useNavigate();
     
@@ -150,6 +150,24 @@ const Send = () => {
                 </div>
 
                 <form onSubmit={handleSend}>
+                    <div style={{marginBottom: '1.5rem'}}>
+                        <label style={{display:'block', marginBottom:'8px', fontWeight: 'bold', color: 'var(--muted-text)'}}>Actif à envoyer :</label>
+                        <select 
+                            value={token} 
+                            onChange={(e) => {
+                                setToken(e.target.value);
+                                setSearchParams({ token: e.target.value });
+                            }} 
+                            className="input-field"
+                            style={{appearance: 'auto', padding: '12px'}}
+                        >
+                            <option value="SGC">Sango Coin (SGC)</option>
+                            <option value="BTC">Bitcoin (BTC)</option>
+                            <option value="ETH">Ethereum (ETH)</option>
+                            <option value="USDT">Tether (USDT)</option>
+                            <option value="SOL">Solana (SOL)</option>
+                        </select>
+                    </div>
                     <div style={{marginBottom: '1.5rem'}}>
                         <label style={{display:'block', marginBottom:'8px', fontWeight: 'bold', color: 'var(--muted-text)'}}>Adresse de destination :</label>
                         <input 
