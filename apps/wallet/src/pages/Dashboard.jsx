@@ -6,7 +6,7 @@ import { fetchBTCBalance } from '../services/btcService';
 import { fetchETHBalance, fetchUSDTBalance } from '../services/ethService';
 import { fetchSOLBalance } from '../services/solService';
 import { fetchExchangeRates } from '../services/swapService';
-import { ArrowUpRight, ArrowDownLeft, ArrowDownUp, CreditCard, Pickaxe } from 'lucide-react';
+import { ArrowUpRight, ArrowDownLeft, ArrowDownUp, CreditCard, Zap } from 'lucide-react';
 
 const ASSET_ICONS = {
     SGC: { color: '#58e192', name: 'Sango Coin' },
@@ -109,7 +109,7 @@ const Dashboard = () => {
                 </button>
                 <button onClick={handleMine} disabled={isMining} className="top-action-btn" style={{opacity: isMining ? 0.5 : 1}}>
                     <div className="top-action-icon secondary">
-                        <Pickaxe size={24} />
+                        <Zap size={24} />
                     </div>
                     Miner
                 </button>
