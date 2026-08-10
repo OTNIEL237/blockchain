@@ -3,7 +3,7 @@ import { Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
 import { WalletContext } from './context/WalletContext';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { LayoutDashboard, Send as SendIcon, ArrowDownToLine, Activity, LogOut, Wallet } from 'lucide-react';
+import { LayoutDashboard, Send as SendIcon, ArrowDownToLine, Activity, LogOut, Wallet, ArrowDownUp } from 'lucide-react';
 
 import CreateWallet from './pages/CreateWallet';
 import ImportWallet from './pages/ImportWallet';
@@ -11,6 +11,7 @@ import Dashboard from './pages/Dashboard';
 import Send from './pages/Send';
 import Receive from './pages/Receive';
 import History from './pages/History';
+import Swap from './pages/Swap';
 
 import './index.css';
 
@@ -89,6 +90,7 @@ const App = () => {
               <NavItem to="/" icon={LayoutDashboard} label="Tableau de bord" />
               <NavItem to="/send" icon={SendIcon} label="Envoyer" />
               <NavItem to="/receive" icon={ArrowDownToLine} label="Recevoir" />
+              <NavItem to="/swap" icon={ArrowDownUp} label="Échanger" />
               <NavItem to="/history" icon={Activity} label="Activité" />
             </div>
 
@@ -116,6 +118,7 @@ const App = () => {
             <Link to="/" style={{color: location.pathname==='/'?'var(--primary-color)':'var(--muted-text)'}}><LayoutDashboard size={24} /></Link>
             <Link to="/send" style={{color: location.pathname==='/send'?'var(--primary-color)':'var(--muted-text)'}}><SendIcon size={24} /></Link>
             <Link to="/receive" style={{color: location.pathname==='/receive'?'var(--primary-color)':'var(--muted-text)'}}><ArrowDownToLine size={24} /></Link>
+            <Link to="/swap" style={{color: location.pathname==='/swap'?'var(--primary-color)':'var(--muted-text)'}}><ArrowDownUp size={24} /></Link>
             <Link to="/history" style={{color: location.pathname==='/history'?'var(--primary-color)':'var(--muted-text)'}}><Activity size={24} /></Link>
           </div>
         </>
@@ -129,6 +132,7 @@ const App = () => {
             <Route path="/import" element={!walletData ? <ImportWallet /> : <Navigate to="/" />} />
             <Route path="/send" element={walletData ? <Send /> : <Navigate to="/" />} />
             <Route path="/receive" element={walletData ? <Receive /> : <Navigate to="/" />} />
+            <Route path="/swap" element={walletData ? <Swap /> : <Navigate to="/" />} />
             <Route path="/history" element={walletData ? <History /> : <Navigate to="/" />} />
           </Routes>
         </div>
