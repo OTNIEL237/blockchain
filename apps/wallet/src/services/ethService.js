@@ -1,8 +1,28 @@
 import { ethers } from 'ethers';
 
-// RPC public pour Ethereum Mainnet (ou Sepolia si configuré)
-const RPC_URL = import.meta.env.VITE_ETH_RPC_URL || 'https://ethereum-rpc.publicnode.com';
-const provider = new ethers.JsonRpcProvider(RPC_URL);
+// Liste des nœuds RPC Ethereum de secours
+const RPC_FALLBACKS = [
+    import.meta.env.VITE_ETH_RPC_URL,
+    'https://ethereum-rpc.publicnode.com',
+    'https://eth.llamarpc.com',
+    'https://rpc.ankr.com/eth',
+    'https://cloudflare-eth.com'
+].filter(Boolean);
+
+// Exécute une opération blockchain avec basculement automatique sur les RPCs si l'un échoue
+const executeWithFallback = async (operation) => {
+    let lastError;
+    for (const rpcUrl of RPC_FALLBACKS) {
+        try {
+            const provider = new ethers.JsonRpcProvider(rpcUrl);
+            return await operation(provider);
+        } catch (err) {
+            console.warn(`RPC ETH ${rpcUrl} a échoué, tentative sur le nœud suivant...`, err);
+            lastError = err;
+        }
+    }
+    throw lastError;
+};
 
 // Contract ABI minimum pour USDT (ERC20)
 const ERC20_ABI = [
@@ -16,54 +36,48 @@ const USDT_ADDRESS = '0xdAC17F958D2ee523a2206206994597C13D831ec7'; // USDT Mainn
 
 export const fetchETHBalance = async (address) => {
     try {
-        const balanceWei = await provider.getBalance(address);
-        return parseFloat(ethers.formatEther(balanceWei)).toFixed(4);
+        const balanceWei = await executeWithFallback(provider => provider.getBalance(address));
+        const ethVal = parseFloat(ethers.formatEther(balanceWei));
+        return ethVal > 0 ? ethVal.toFixed(6) : '0.00';
     } catch (error) {
         console.error("Erreur ETH Balance:", error);
-        return 0;
+        return '0.00';
     }
 };
 
 export const fetchUSDTBalance = async (address) => {
     try {
-        const contract = new ethers.Contract(USDT_ADDRESS, ERC20_ABI, provider);
-        const balance = await contract.balanceOf(address);
-        const decimals = await contract.decimals();
-        return parseFloat(ethers.formatUnits(balance, decimals)).toFixed(2);
+        const balance = await executeWithFallback(async (provider) => {
+            const contract = new ethers.Contract(USDT_ADDRESS, ERC20_ABI, provider);
+            return await contract.balanceOf(address);
+        });
+        return parseFloat(ethers.formatUnits(balance, 6)).toFixed(2);
     } catch (error) {
         console.error("Erreur USDT Balance:", error);
-        return 0;
+        return '0.00';
     }
 };
 
 export const sendETHTransaction = async (privateKey, toAddress, amountEth) => {
-    try {
+    return executeWithFallback(async (provider) => {
         const wallet = new ethers.Wallet(privateKey, provider);
         const tx = await wallet.sendTransaction({
             to: toAddress,
             value: ethers.parseEther(amountEth.toString())
         });
-        await tx.wait(); // Attendre la confirmation
+        await tx.wait();
         return { success: true, hash: tx.hash };
-    } catch (error) {
-        console.error("Erreur envoi ETH:", error);
-        throw error;
-    }
+    });
 };
 
 export const sendUSDTTransaction = async (privateKey, toAddress, amountUsdt) => {
-    try {
+    return executeWithFallback(async (provider) => {
         const wallet = new ethers.Wallet(privateKey, provider);
         const contract = new ethers.Contract(USDT_ADDRESS, ERC20_ABI, wallet);
-        
-        // Les décimales USDT sont 6
         const amountParsed = ethers.parseUnits(amountUsdt.toString(), 6);
         const tx = await contract.transfer(toAddress, amountParsed);
-        
-        await tx.wait(); // Attendre la confirmation
+        await tx.wait();
         return { success: true, hash: tx.hash };
-    } catch (error) {
-        console.error("Erreur envoi USDT:", error);
-        throw error;
-    }
+    });
 };
+
