@@ -120,14 +120,57 @@ body {
 }
 
 .account-card-mini {
-  margin-top: auto;
+  margin-top: 10px;
   background-color: var(--card-bg);
   border: 1px solid var(--border-color);
-  padding: 1rem;
+  padding: 0.85rem 1rem;
   border-radius: 16px;
   display: flex;
   align-items: center;
   gap: 12px;
+}
+
+/* Theme Switcher Segmented Control */
+.theme-switcher {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  padding: 4px;
+  gap: 4px;
+  margin-top: auto;
+  margin-bottom: 12px;
+  width: 100%;
+}
+
+.theme-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 18px;
+  border: none;
+  background: transparent;
+  color: var(--muted-text);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  flex: 1;
+}
+
+.theme-btn:hover {
+  color: var(--text-color);
+  background-color: rgba(255,255,255,0.05);
+}
+
+.theme-btn.active {
+  background-color: var(--primary-color);
+  color: #000000;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Main Content Area */

@@ -3,7 +3,7 @@ import { Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
 import { WalletContext } from './context/WalletContext';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { LayoutDashboard, Send as SendIcon, ArrowDownToLine, Activity, LogOut, Wallet, ArrowDownUp } from 'lucide-react';
+import { LayoutDashboard, Send as SendIcon, ArrowDownToLine, Activity, LogOut, Wallet, ArrowDownUp, Sun, Moon, Sparkles } from 'lucide-react';
 
 import CreateWallet from './pages/CreateWallet';
 import ImportWallet from './pages/ImportWallet';
@@ -94,10 +94,31 @@ const App = () => {
               <NavItem to="/history" icon={Activity} label="Activité" />
             </div>
 
-            <div style={{marginTop: 'auto', marginBottom: '15px', display: 'flex', gap: '8px', justifyContent: 'center'}}>
-              <button onClick={() => setTheme('light')} className={`btn ${theme === 'light' ? 'btn-primary' : 'btn-secondary'}`} style={{padding: '5px 10px', fontSize: '0.75rem', flex: 1}}>Clair</button>
-              <button onClick={() => setTheme('dark')} className={`btn ${theme === 'dark' ? 'btn-primary' : 'btn-secondary'}`} style={{padding: '5px 10px', fontSize: '0.75rem', flex: 1}}>Sombre</button>
-              <button onClick={() => setTheme('dim')} className={`btn ${theme === 'dim' ? 'btn-primary' : 'btn-secondary'}`} style={{padding: '5px 10px', fontSize: '0.75rem', flex: 1}}>Dim</button>
+            <div className="theme-switcher">
+              <button 
+                onClick={() => setTheme('light')} 
+                className={`theme-btn ${theme === 'light' ? 'active' : ''}`}
+                title="Mode Clair"
+              >
+                <Sun size={14} />
+                <span>Clair</span>
+              </button>
+              <button 
+                onClick={() => setTheme('dark')} 
+                className={`theme-btn ${theme === 'dark' ? 'active' : ''}`}
+                title="Mode Sombre"
+              >
+                <Moon size={14} />
+                <span>Sombre</span>
+              </button>
+              <button 
+                onClick={() => setTheme('dim')} 
+                className={`theme-btn ${theme === 'dim' ? 'active' : ''}`}
+                title="Mode Dim"
+              >
+                <Sparkles size={14} />
+                <span>Dim</span>
+              </button>
             </div>
 
             <div className="account-card-mini">
