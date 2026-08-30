@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { WalletContext } from '../context/WalletContext';
 import { fetchSGCHistory } from '../services/sgcService';
 import { Activity, ExternalLink } from 'lucide-react';
-import { TOKEN_LOGOS } from '../utils/tokenLogos';
 
 const History = () => {
     const { walletData } = useContext(WalletContext);
@@ -55,7 +54,7 @@ const History = () => {
                         {history.map((tx, idx) => (
                             <div key={idx} className="activity-item">
                                 <div className="activity-icon">
-                                    <img src={TOKEN_LOGOS[tx.network]} alt={tx.network} style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }} />
+                                    <Activity size={20} color={tx.type === 'Envoyé' ? 'var(--danger-color)' : 'var(--primary-color)'} />
                                 </div>
                                 <div>
                                     <div style={{fontWeight: '600'}}>{tx.type} {tx.network}</div>

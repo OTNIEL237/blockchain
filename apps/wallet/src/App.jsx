@@ -9,11 +9,9 @@ import CreateWallet from './pages/CreateWallet';
 import ImportWallet from './pages/ImportWallet';
 import Dashboard from './pages/Dashboard';
 import Send from './pages/Send';
-import ChooseToken from './pages/ChooseToken';
 import Receive from './pages/Receive';
 import History from './pages/History';
 import Swap from './pages/Swap';
-import TokenDetail from './pages/TokenDetail';
 
 import './index.css';
 
@@ -139,11 +137,8 @@ const App = () => {
             <Route path="/" element={walletData ? <Dashboard /> : <Navigate to="/create" />} />
             <Route path="/create" element={!walletData ? <CreateWallet /> : <Navigate to="/" />} />
             <Route path="/import" element={!walletData ? <ImportWallet /> : <Navigate to="/" />} />
-            <Route path="/send" element={walletData ? <ChooseToken /> : <Navigate to="/" />} />
-            <Route path="/send/confirm" element={walletData ? <Send /> : <Navigate to="/" />} />
-            <Route path="/receive" element={walletData ? <ChooseToken /> : <Navigate to="/" />} />
-            <Route path="/receive/confirm" element={walletData ? <Receive /> : <Navigate to="/" />} />
-            <Route path="/token/:token" element={walletData ? <TokenDetail /> : <Navigate to="/" />} />
+            <Route path="/send" element={walletData ? <Send /> : <Navigate to="/" />} />
+            <Route path="/receive" element={walletData ? <Receive /> : <Navigate to="/" />} />
             <Route path="/swap" element={walletData ? <Swap /> : <Navigate to="/" />} />
             <Route path="/history" element={walletData ? <History /> : <Navigate to="/" />} />
           </Routes>

@@ -7,13 +7,10 @@ import { sendSOLTransaction, fetchSOLBalance } from '../services/solService';
 import { sendSGCTransaction, fetchSGCBalance } from '../services/sgcService';
 import { sendBTCTransaction, fetchBTCBalance } from '../services/btcService';
 import { toast } from 'react-toastify';
-import { TOKEN_LOGOS, TOKEN_NAMES } from '../utils/tokenLogos';
-import { TOKEN_CONFIG, SUPPORTED_SEND_COMBOS } from '../utils/tokenConfig';
 
 const Send = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [token, setToken] = useState(searchParams.get('token') || 'SGC');
-    const [network, setNetwork] = useState(searchParams.get('network') || (TOKEN_CONFIG[searchParams.get('token') || 'SGC']?.defaultNetwork));
     const { walletData } = useContext(WalletContext);
     const navigate = useNavigate();
     
@@ -31,27 +28,18 @@ const Send = () => {
             setBalanceLoading(true);
             try {
                 let bal = 0;
-                // Determine balance based on token + network
                 if (token === 'SGC') {
                     bal = await fetchSGCBalance(walletData.wallets.SGC.address);
                 } else if (token === 'BTC') {
                     bal = await fetchBTCBalance(walletData.wallets.BTC.address);
-                } else if (token === 'ETH' && network === 'Ethereum') {
+                } else if (token === 'ETH') {
                     bal = await fetchETHBalance(walletData.wallets.ETH.address);
                 } else if (token === 'USDT') {
-                    if (network === 'Ethereum') {
-                        bal = await fetchUSDTBalance(walletData.wallets.ETH.address);
-                        const ethBal = await fetchETHBalance(walletData.wallets.ETH.address);
-                        setEthBalanceForGas(parseFloat(ethBal));
-                    } else if (network === 'Solana') {
-                        // SPL-USDT not implemented; show SOL balance as proxy for gas availability
-                        try {
-                            bal = await fetchSOLBalance(walletData.wallets.SOL.address);
-                        } catch (e) {
-                            bal = 0;
-                        }
-                    }
-                } else if (token === 'SOL' && network === 'Solana') {
+                    bal = await fetchUSDTBalance(walletData.wallets.ETH.address);
+                    // Pour USDT, on a aussi besoin de savoir si l'utilisateur a de l'ETH pour les frais de gas
+                    const ethBal = await fetchETHBalance(walletData.wallets.ETH.address);
+                    setEthBalanceForGas(parseFloat(ethBal));
+                } else if (token === 'SOL') {
                     bal = await fetchSOLBalance(walletData.wallets.SOL.address);
                 }
                 setBalance(parseFloat(bal));
@@ -62,13 +50,7 @@ const Send = () => {
             setBalanceLoading(false);
         };
         loadBalance();
-    }, [walletData, token, network]);
-
-    // keep network in sync if query param changes
-    useEffect(() => {
-        const qNet = searchParams.get('network');
-        if (qNet) setNetwork(qNet);
-    }, [searchParams]);
+    }, [walletData, token]);
 
     const handleSend = async (e) => {
         e.preventDefault();
@@ -91,15 +73,8 @@ const Send = () => {
             return;
         }
 
-        // Check supported token/network combo
-        const supported = SUPPORTED_SEND_COMBOS.find(c => c.token === token && c.network === network);
-        if (!supported) {
-            toast.error(`❌ Envoi de ${token} sur ${network} non supporté.`);
-            return;
-        }
-
-        // For USDT on Ethereum: check ETH for gas
-        if (token === 'USDT' && network === 'Ethereum' && ethBalanceForGas !== null && ethBalanceForGas <= 0) {
+        // Pour USDT : vérifier qu'il y a de l'ETH pour les frais de gas
+        if (token === 'USDT' && ethBalanceForGas !== null && ethBalanceForGas <= 0) {
             toast.error(`❌ Solde insuffisant (ETH requis pour les frais).`);
             return;
         }
@@ -115,17 +90,15 @@ const Send = () => {
 
         try {
             let result;
-            // pick private key and call appropriate send function based on token+network
-            if (token === 'USDT' && network === 'Ethereum') {
-                const privateKey = walletData.wallets.ETH.privateKey;
-                result = await sendUSDTTransaction(privateKey, toAddress, amount);
-            } else if (token === 'ETH' && network === 'Ethereum') {
-                const privateKey = walletData.wallets.ETH.privateKey;
+            const privateKey = walletData.wallets[token === 'USDT' ? 'ETH' : token].privateKey;
+
+            if (token === 'ETH') {
                 result = await sendETHTransaction(privateKey, toAddress, amount);
-            } else if (token === 'SOL' && network === 'Solana') {
-                const privateKey = walletData.wallets.SOL.privateKey;
+            } else if (token === 'USDT') {
+                result = await sendUSDTTransaction(privateKey, toAddress, amount);
+            } else if (token === 'SOL') {
                 result = await sendSOLTransaction(privateKey, toAddress, amount);
-            } else if (token === 'SGC' && network === 'SGC') {
+            } else if (token === 'SGC') {
                 const fromAddress = walletData.wallets.SGC.address;
                 result = await sendSGCTransaction({
                     fromAddress,
@@ -133,12 +106,9 @@ const Send = () => {
                     amount: parseFloat(amount),
                     fee: 1
                 });
-            } else if (token === 'BTC' && network === 'Bitcoin') {
-                const privateKey = walletData.wallets.BTC.privateKey;
+            } else if (token === 'BTC') {
                 const fromAddress = walletData.wallets.BTC.address;
                 result = await sendBTCTransaction(privateKey, fromAddress, toAddress, amount);
-            } else {
-                throw new Error('Envoi non implémenté pour ce réseau/token');
             }
 
             toast.success(`✅ Transaction confirmée. Hash: ${result?.hash || result?.signature || 'N/A'}`);
@@ -154,10 +124,7 @@ const Send = () => {
 
     return (
         <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '2rem' }}>
-                <img src={TOKEN_LOGOS[token]} alt={token} style={{ width: '48px', height: '48px', borderRadius: '50%' }} />
-                <h1 className="page-title" style={{ margin: 0 }}>Envoyer {TOKEN_NAMES[token]}</h1>
-            </div>
+            <h1 className="page-title">Envoyer {NETWORKS[token]}</h1>
             
             <div className="card" style={{maxWidth: '600px'}}>
                 {/* Affichage du solde disponible */}
@@ -183,7 +150,35 @@ const Send = () => {
                 </div>
 
                 <form onSubmit={handleSend}>
-                    {/* Token is chosen on the previous screen (ChooseToken). */}
+                    <div style={{marginBottom: '1.5rem'}}>
+                        <label style={{display:'block', marginBottom:'8px', fontWeight: 'bold', color: 'var(--muted-text)'}}>Actif à envoyer :</label>
+                        <select 
+                            value={token} 
+                            onChange={(e) => {
+                                setToken(e.target.value);
+                                setSearchParams({ token: e.target.value });
+                            }} 
+                            style={{
+                                appearance: 'auto', 
+                                padding: '8px 12px', 
+                                width: 'auto', 
+                                minWidth: '200px',
+                                borderRadius: '8px', 
+                                background: 'var(--bg-color)', 
+                                color: 'var(--text-color)', 
+                                border: '1px solid var(--border-color)', 
+                                fontSize: '0.95rem',
+                                outline: 'none',
+                                cursor: 'pointer'
+                            }}
+                        >
+                            <option value="SGC">Sango Coin (SGC)</option>
+                            <option value="BTC">Bitcoin (BTC)</option>
+                            <option value="ETH">Ethereum (ETH)</option>
+                            <option value="USDT">Tether (USDT)</option>
+                            <option value="SOL">Solana (SOL)</option>
+                        </select>
+                    </div>
                     <div style={{marginBottom: '1.5rem'}}>
                         <label style={{display:'block', marginBottom:'8px', fontWeight: 'bold', color: 'var(--muted-text)'}}>Adresse de destination :</label>
                         <input 
