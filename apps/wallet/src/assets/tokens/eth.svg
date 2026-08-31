@@ -1,14 +1,16 @@
 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="ethGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#627EEA;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#4C63D2;stop-opacity:1" />
+      <stop offset="0%" stop-color="#627EEA"/>
+      <stop offset="100%" stop-color="#2F49C6"/>
     </linearGradient>
   </defs>
-  <circle cx="100" cy="100" r="100" fill="url(#ethGradient)"/>
-  <g transform="translate(100, 50)">
-    <!-- Ethereum symbol (diamond) -->
-    <polygon points="0,-40 30,0 0,25 -30,0" fill="white"/>
-    <polygon points="0,25 30,50 0,75 -30,50" fill="white" opacity="0.8"/>
+  <rect width="200" height="200" rx="28" fill="url(#ethGradient)"/>
+  <g transform="translate(100,100)">
+    <g transform="translate(0,-10)">
+      <polygon points="0,-48 36,0 0,32 -36,0" fill="white"/>
+      <polygon points="0,32 36,64 0,96 -36,64" fill="rgba(255,255,255,0.92)"/>
+    </g>
+    <text x="0" y="74" font-size="14" font-weight="600" text-anchor="middle" fill="white" font-family="Inter, Arial">Ethereum</text>
   </g>
 </svg>
