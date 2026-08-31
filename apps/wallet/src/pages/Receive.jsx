@@ -6,6 +6,7 @@ import { NETWORKS } from '../config';
 import { Copy } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { TOKEN_LOGOS, TOKEN_NAMES } from '../utils/tokenLogos';
+import { TOKEN_CONFIG } from '../utils/tokenConfig';
 
 const Receive = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -15,8 +16,10 @@ const Receive = () => {
     
     if (!walletData) return null;
 
-    const actualTokenKey = token === 'USDT' ? 'ETH' : token;
-    const address = walletData.wallets[actualTokenKey].address;
+    const network = searchParams.get('network') || TOKEN_CONFIG[token]?.defaultNetwork;
+    // For tokens mapped to a native wallet key, determine the wallet key
+    const actualTokenKey = token === 'USDT' && network === 'Ethereum' ? 'ETH' : token === 'USDT' && network === 'Solana' ? 'SOL' : token;
+    const address = walletData.wallets[actualTokenKey]?.address || '';
 
     const handleCopy = () => {
         navigator.clipboard.writeText(address);

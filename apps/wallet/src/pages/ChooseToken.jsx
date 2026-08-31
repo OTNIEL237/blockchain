@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { TOKEN_NAMES, TOKEN_LOGOS } from '../utils/tokenLogos';
+import { TOKEN_CONFIG } from '../utils/tokenConfig';
 
 const TOKENS = ['SGC','BTC','ETH','USDT','SOL'];
 
@@ -12,8 +13,15 @@ const ChooseToken = () => {
   // Determine whether this chooser is for sending or receiving based on path
   const action = location.pathname.startsWith('/receive') ? 'receive' : 'send';
 
+  const [selectedNetwork, setSelectedNetwork] = useState(TOKEN_CONFIG[selected].defaultNetwork);
+
+  // update selected network when token changes
+  React.useEffect(() => {
+    setSelectedNetwork(TOKEN_CONFIG[selected].defaultNetwork);
+  }, [selected]);
+
   const handleConfirm = () => {
-    navigate(`/${action}/confirm?token=${selected}`);
+    navigate(`/${action}/confirm?token=${selected}&network=${encodeURIComponent(selectedNetwork)}`);
   };
 
   return (
@@ -31,7 +39,18 @@ const ChooseToken = () => {
         </div>
 
         <div style={{marginTop: '18px', display: 'flex', gap: '12px'}}>
-          <button className="btn btn-primary" onClick={handleConfirm} style={{flex:1}}>Confirmer</button>
+          <div style={{flex:1}}>
+            <div style={{marginBottom:8, color:'var(--muted-text)'}}>Réseau :</div>
+            <div style={{display:'flex', gap:8, flexWrap:'wrap'}}>
+              {TOKEN_CONFIG[selected].networks.map(net => (
+                <label key={net} style={{display:'flex', alignItems:'center', gap:8, padding:'6px 10px', borderRadius:8, background: selectedNetwork===net ? 'rgba(88,225,146,0.08)' : 'transparent', cursor:'pointer'}}>
+                  <input type="radio" name="network" value={net} checked={selectedNetwork===net} onChange={() => setSelectedNetwork(net)} />
+                  <span style={{fontWeight:600}}>{net}</span>
+                </label>
+              ))}
+            </div>
+            <button className="btn btn-primary" onClick={handleConfirm} style={{width:'100%', marginTop:12}}>Confirmer</button>
+          </div>
         </div>
       </div>
     </div>

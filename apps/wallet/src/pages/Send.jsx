@@ -8,10 +8,12 @@ import { sendSGCTransaction, fetchSGCBalance } from '../services/sgcService';
 import { sendBTCTransaction, fetchBTCBalance } from '../services/btcService';
 import { toast } from 'react-toastify';
 import { TOKEN_LOGOS, TOKEN_NAMES } from '../utils/tokenLogos';
+import { TOKEN_CONFIG, SUPPORTED_SEND_COMBOS } from '../utils/tokenConfig';
 
 const Send = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [token, setToken] = useState(searchParams.get('token') || 'SGC');
+    const [network, setNetwork] = useState(searchParams.get('network') || (TOKEN_CONFIG[searchParams.get('token') || 'SGC']?.defaultNetwork));
     const { walletData } = useContext(WalletContext);
     const navigate = useNavigate();
     
@@ -29,18 +31,27 @@ const Send = () => {
             setBalanceLoading(true);
             try {
                 let bal = 0;
+                // Determine balance based on token + network
                 if (token === 'SGC') {
                     bal = await fetchSGCBalance(walletData.wallets.SGC.address);
                 } else if (token === 'BTC') {
                     bal = await fetchBTCBalance(walletData.wallets.BTC.address);
-                } else if (token === 'ETH') {
+                } else if (token === 'ETH' && network === 'Ethereum') {
                     bal = await fetchETHBalance(walletData.wallets.ETH.address);
                 } else if (token === 'USDT') {
-                    bal = await fetchUSDTBalance(walletData.wallets.ETH.address);
-                    // Pour USDT, on a aussi besoin de savoir si l'utilisateur a de l'ETH pour les frais de gas
-                    const ethBal = await fetchETHBalance(walletData.wallets.ETH.address);
-                    setEthBalanceForGas(parseFloat(ethBal));
-                } else if (token === 'SOL') {
+                    if (network === 'Ethereum') {
+                        bal = await fetchUSDTBalance(walletData.wallets.ETH.address);
+                        const ethBal = await fetchETHBalance(walletData.wallets.ETH.address);
+                        setEthBalanceForGas(parseFloat(ethBal));
+                    } else if (network === 'Solana') {
+                        // SPL-USDT not implemented; show SOL balance as proxy for gas availability
+                        try {
+                            bal = await fetchSOLBalance(walletData.wallets.SOL.address);
+                        } catch (e) {
+                            bal = 0;
+                        }
+                    }
+                } else if (token === 'SOL' && network === 'Solana') {
                     bal = await fetchSOLBalance(walletData.wallets.SOL.address);
                 }
                 setBalance(parseFloat(bal));
@@ -51,7 +62,13 @@ const Send = () => {
             setBalanceLoading(false);
         };
         loadBalance();
-    }, [walletData, token]);
+    }, [walletData, token, network]);
+
+    // keep network in sync if query param changes
+    useEffect(() => {
+        const qNet = searchParams.get('network');
+        if (qNet) setNetwork(qNet);
+    }, [searchParams]);
 
     const handleSend = async (e) => {
         e.preventDefault();
@@ -74,8 +91,15 @@ const Send = () => {
             return;
         }
 
-        // Pour USDT : vérifier qu'il y a de l'ETH pour les frais de gas
-        if (token === 'USDT' && ethBalanceForGas !== null && ethBalanceForGas <= 0) {
+        // Check supported token/network combo
+        const supported = SUPPORTED_SEND_COMBOS.find(c => c.token === token && c.network === network);
+        if (!supported) {
+            toast.error(`❌ Envoi de ${token} sur ${network} non supporté.`);
+            return;
+        }
+
+        // For USDT on Ethereum: check ETH for gas
+        if (token === 'USDT' && network === 'Ethereum' && ethBalanceForGas !== null && ethBalanceForGas <= 0) {
             toast.error(`❌ Solde insuffisant (ETH requis pour les frais).`);
             return;
         }
@@ -91,15 +115,17 @@ const Send = () => {
 
         try {
             let result;
-            const privateKey = walletData.wallets[token === 'USDT' ? 'ETH' : token].privateKey;
-
-            if (token === 'ETH') {
-                result = await sendETHTransaction(privateKey, toAddress, amount);
-            } else if (token === 'USDT') {
+            // pick private key and call appropriate send function based on token+network
+            if (token === 'USDT' && network === 'Ethereum') {
+                const privateKey = walletData.wallets.ETH.privateKey;
                 result = await sendUSDTTransaction(privateKey, toAddress, amount);
-            } else if (token === 'SOL') {
+            } else if (token === 'ETH' && network === 'Ethereum') {
+                const privateKey = walletData.wallets.ETH.privateKey;
+                result = await sendETHTransaction(privateKey, toAddress, amount);
+            } else if (token === 'SOL' && network === 'Solana') {
+                const privateKey = walletData.wallets.SOL.privateKey;
                 result = await sendSOLTransaction(privateKey, toAddress, amount);
-            } else if (token === 'SGC') {
+            } else if (token === 'SGC' && network === 'SGC') {
                 const fromAddress = walletData.wallets.SGC.address;
                 result = await sendSGCTransaction({
                     fromAddress,
@@ -107,9 +133,12 @@ const Send = () => {
                     amount: parseFloat(amount),
                     fee: 1
                 });
-            } else if (token === 'BTC') {
+            } else if (token === 'BTC' && network === 'Bitcoin') {
+                const privateKey = walletData.wallets.BTC.privateKey;
                 const fromAddress = walletData.wallets.BTC.address;
                 result = await sendBTCTransaction(privateKey, fromAddress, toAddress, amount);
+            } else {
+                throw new Error('Envoi non implémenté pour ce réseau/token');
             }
 
             toast.success(`✅ Transaction confirmée. Hash: ${result?.hash || result?.signature || 'N/A'}`);
