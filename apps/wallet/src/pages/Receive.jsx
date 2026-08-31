@@ -31,35 +31,7 @@ const Receive = () => {
             </div>
             
             <div className="card" style={{maxWidth: '500px', textAlign: 'center'}}>
-                <div style={{marginBottom: '1.5rem', textAlign: 'left'}}>
-                    <label style={{display:'block', marginBottom:'8px', fontWeight: 'bold', color: 'var(--muted-text)'}}>Actif à recevoir :</label>
-                    <select 
-                        value={token} 
-                        onChange={(e) => {
-                            setToken(e.target.value);
-                            setSearchParams({ token: e.target.value });
-                        }} 
-                        style={{
-                            appearance: 'auto', 
-                            padding: '8px 12px', 
-                            width: 'auto', 
-                            minWidth: '200px',
-                            borderRadius: '8px', 
-                            background: 'var(--bg-color)', 
-                            color: 'var(--text-color)', 
-                            border: '1px solid var(--border-color)', 
-                            fontSize: '0.95rem',
-                            outline: 'none',
-                            cursor: 'pointer'
-                        }}
-                    >
-                        <option value="SGC">Sango Coin (SGC)</option>
-                        <option value="BTC">Bitcoin (BTC)</option>
-                        <option value="ETH">Ethereum (ETH)</option>
-                        <option value="USDT">Tether (USDT)</option>
-                        <option value="SOL">Solana (SOL)</option>
-                    </select>
-                </div>
+                {/* Token is chosen on the previous screen (ChooseToken). */}
                 
                 <p style={{color: 'var(--muted-text)', marginBottom: '2rem'}}>
                     Utilisez l'adresse ci-dessous pour recevoir vos {token}.

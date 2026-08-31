@@ -140,7 +140,8 @@ const App = () => {
             <Route path="/import" element={!walletData ? <ImportWallet /> : <Navigate to="/" />} />
             <Route path="/send" element={walletData ? <ChooseToken /> : <Navigate to="/" />} />
             <Route path="/send/confirm" element={walletData ? <Send /> : <Navigate to="/" />} />
-            <Route path="/receive" element={walletData ? <Receive /> : <Navigate to="/" />} />
+            <Route path="/receive" element={walletData ? <ChooseToken /> : <Navigate to="/" />} />
+            <Route path="/receive/confirm" element={walletData ? <Receive /> : <Navigate to="/" />} />
             <Route path="/swap" element={walletData ? <Swap /> : <Navigate to="/" />} />
             <Route path="/history" element={walletData ? <History /> : <Navigate to="/" />} />
           </Routes>
