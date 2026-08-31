@@ -1,0 +1,13 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Gradient definition -->
+  <defs>
+    <linearGradient id="sgcGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#58e192;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#29a060;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Circle background -->
+  <circle cx="100" cy="100" r="100" fill="url(#sgcGradient)"/>
+  <!-- Letter S -->
+  <text x="100" y="120" font-size="90" font-weight="bold" text-anchor="middle" fill="white" font-family="Arial, sans-serif">S</text>
+</svg>
