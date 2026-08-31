@@ -10,7 +10,8 @@ export const fetchExchangeRates = async () => {
             ETH: data.ethereum?.usd || 3500,
             USDT: data.tether?.usd || 1,
             SOL: data.solana?.usd || 150,
-            SGC: 1 // Default price for SGC since it's not listed yet
+            // Fix SGC price to $0.10 as requested
+            SGC: 0.10
         };
     } catch (error) {
         console.error("Erreur Swap Service:", error);
@@ -20,7 +21,8 @@ export const fetchExchangeRates = async () => {
             ETH: 3500,
             USDT: 1,
             SOL: 150,
-            SGC: 1
+            // Fallback SGC price set to $0.10
+            SGC: 0.10
         };
     }
 };
