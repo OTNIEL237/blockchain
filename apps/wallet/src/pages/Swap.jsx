@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { WalletContext } from '../context/WalletContext';
 import { ArrowDownUp } from 'lucide-react';
 import { fetchExchangeRates, calculateSwapAmount, executeSwap } from '../services/swapService';
+import { TOKEN_LOGOS } from '../utils/tokenLogos';
 
 const Swap = () => {
     const { walletData } = useContext(WalletContext);
@@ -55,12 +56,13 @@ const Swap = () => {
                     <>
                         <div style={{ marginBottom: '20px' }}>
                             <label style={{ display: 'block', marginBottom: '8px', color: 'var(--muted-text)' }}>De (Envoyer) :</label>
-                            <div style={{ display: 'flex', gap: '10px' }}>
+                            <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                                <img src={TOKEN_LOGOS[fromToken]} alt={fromToken} style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover' }} />
                                 <select 
                                     className="input-field" 
                                     value={fromToken} 
                                     onChange={(e) => setFromToken(e.target.value)}
-                                    style={{ width: '120px' }}
+                                    style={{ width: '100px' }}
                                 >
                                     {tokens.map(t => <option key={t} value={t}>{t}</option>)}
                                 </select>
@@ -90,12 +92,13 @@ const Swap = () => {
 
                         <div style={{ marginBottom: '30px' }}>
                             <label style={{ display: 'block', marginBottom: '8px', color: 'var(--muted-text)' }}>À (Recevoir estimé) :</label>
-                            <div style={{ display: 'flex', gap: '10px' }}>
+                            <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                                <img src={TOKEN_LOGOS[toToken]} alt={toToken} style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover' }} />
                                 <select 
                                     className="input-field" 
                                     value={toToken} 
                                     onChange={(e) => setToToken(e.target.value)}
-                                    style={{ width: '120px' }}
+                                    style={{ width: '100px' }}
                                 >
                                     {tokens.map(t => <option key={t} value={t} disabled={t === fromToken}>{t}</option>)}
                                 </select>

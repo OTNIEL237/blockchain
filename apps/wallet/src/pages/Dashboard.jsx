@@ -7,13 +7,18 @@ import { fetchETHBalance, fetchUSDTBalance } from '../services/ethService';
 import { fetchSOLBalance } from '../services/solService';
 import { fetchExchangeRates } from '../services/swapService';
 import { ArrowUpRight, ArrowDownLeft, ArrowDownUp, CreditCard, Zap } from 'lucide-react';
+import SGCLogo from '../assets/tokens/sgc.svg';
+import BTCLogo from '../assets/tokens/btc.svg';
+import ETHLogo from '../assets/tokens/eth.svg';
+import USDTLogo from '../assets/tokens/usdt.svg';
+import SOLLogo from '../assets/tokens/sol.svg';
 
 const ASSET_ICONS = {
-    SGC: { color: '#58e192', name: 'Sango Coin' },
-    BTC: { color: '#F7931A', name: 'Bitcoin' },
-    ETH: { color: '#627EEA', name: 'Ethereum' },
-    USDT: { color: '#26A17B', name: 'TetherUS' },
-    SOL: { color: '#14F195', name: 'Solana' }
+    SGC: { color: '#58e192', name: 'Sango Coin', logo: SGCLogo },
+    BTC: { color: '#F7931A', name: 'Bitcoin', logo: BTCLogo },
+    ETH: { color: '#627EEA', name: 'Ethereum', logo: ETHLogo },
+    USDT: { color: '#26A17B', name: 'TetherUS', logo: USDTLogo },
+    SOL: { color: '#14F195', name: 'Solana', logo: SOLLogo }
 };
 
 const Dashboard = () => {
@@ -127,9 +132,7 @@ const Dashboard = () => {
                     
                     return (
                         <Link to={`/receive?token=${ticker}`} key={ticker} className="token-item">
-                            <div className="token-icon" style={{backgroundColor: iconConfig.color}}>
-                                {ticker === 'SGC' ? 'S' : ticker === 'BTC' ? '₿' : ticker === 'ETH' ? 'Ξ' : ticker === 'USDT' ? '₮' : 'S'}
-                            </div>
+                            <img src={iconConfig.logo} alt={ticker} className="token-icon-img" />
                             
                             <div className="token-info">
                                 <div className="token-name">{iconConfig.name}</div>

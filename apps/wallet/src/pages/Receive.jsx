@@ -5,6 +5,7 @@ import { WalletContext } from '../context/WalletContext';
 import { NETWORKS } from '../config';
 import { Copy } from 'lucide-react';
 import { toast } from 'react-toastify';
+import { TOKEN_LOGOS, TOKEN_NAMES } from '../utils/tokenLogos';
 
 const Receive = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -24,7 +25,10 @@ const Receive = () => {
 
     return (
         <div>
-            <h1 className="page-title">Recevoir {NETWORKS[token]}</h1>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '2rem' }}>
+                <img src={TOKEN_LOGOS[token]} alt={token} style={{ width: '48px', height: '48px', borderRadius: '50%' }} />
+                <h1 className="page-title" style={{ margin: 0 }}>Recevoir {TOKEN_NAMES[token]}</h1>
+            </div>
             
             <div className="card" style={{maxWidth: '500px', textAlign: 'center'}}>
                 <div style={{marginBottom: '1.5rem', textAlign: 'left'}}>

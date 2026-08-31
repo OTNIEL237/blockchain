@@ -7,6 +7,7 @@ import { sendSOLTransaction, fetchSOLBalance } from '../services/solService';
 import { sendSGCTransaction, fetchSGCBalance } from '../services/sgcService';
 import { sendBTCTransaction, fetchBTCBalance } from '../services/btcService';
 import { toast } from 'react-toastify';
+import { TOKEN_LOGOS, TOKEN_NAMES } from '../utils/tokenLogos';
 
 const Send = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -124,7 +125,10 @@ const Send = () => {
 
     return (
         <div>
-            <h1 className="page-title">Envoyer {NETWORKS[token]}</h1>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '2rem' }}>
+                <img src={TOKEN_LOGOS[token]} alt={token} style={{ width: '48px', height: '48px', borderRadius: '50%' }} />
+                <h1 className="page-title" style={{ margin: 0 }}>Envoyer {TOKEN_NAMES[token]}</h1>
+            </div>
             
             <div className="card" style={{maxWidth: '600px'}}>
                 {/* Affichage du solde disponible */}
