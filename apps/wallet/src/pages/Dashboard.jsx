@@ -131,7 +131,7 @@ const Dashboard = () => {
                     const iconConfig = ASSET_ICONS[ticker];
                     
                     return (
-                        <Link to={`/receive?token=${ticker}`} key={ticker} className="token-item">
+                        <Link to={`/token/${ticker}`} key={ticker} className="token-item">
                             <img src={iconConfig.logo} alt={ticker} className="token-icon-img" />
                             
                             <div className="token-info">
