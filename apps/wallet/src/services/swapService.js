@@ -25,6 +25,34 @@ export const fetchExchangeRates = async () => {
     }
 };
 
+const MARKET_IDS = {
+    BTC: 'bitcoin',
+    ETH: 'ethereum',
+    USDT: 'tether',
+    SOL: 'solana'
+};
+
+export const fetchTokenMarketStats = async (ticker) => {
+    const fallback = { volume24h: 0, change24h: 0, open: 0, fundingRate: 0 };
+    if (ticker === 'SGC') return fallback;
+
+    try {
+        const id = MARKET_IDS[ticker];
+        const response = await fetch(`https://api.coingecko.com/api/v3/coins/${id}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false`);
+        if (!response.ok) throw new Error('Erreur récupération statistiques');
+        const marketData = (await response.json()).market_data;
+        return {
+            volume24h: marketData?.total_volume?.usd || 0,
+            change24h: marketData?.price_change_percentage_24h || 0,
+            open: marketData?.open_interest_usd || 0,
+            fundingRate: 0.01
+        };
+    } catch (error) {
+        console.error('Erreur statistiques token:', error);
+        return fallback;
+    }
+};
+
 export const calculateSwapAmount = (amount, fromRate, toRate) => {
     if (!amount || isNaN(amount) || amount <= 0) return 0;
     // value in USD = amount * fromRate

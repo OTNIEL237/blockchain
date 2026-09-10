@@ -12,6 +12,7 @@ import Send from './pages/Send';
 import Receive from './pages/Receive';
 import History from './pages/History';
 import Swap from './pages/Swap';
+import TokenDetails from './pages/TokenDetails';
 
 import './index.css';
 
@@ -135,6 +136,7 @@ const App = () => {
         <div className="content-wrapper">
           <Routes>
             <Route path="/" element={walletData ? <Dashboard /> : <Navigate to="/create" />} />
+            <Route path="/token/:ticker" element={walletData ? <TokenDetails /> : <Navigate to="/" />} />
             <Route path="/create" element={!walletData ? <CreateWallet /> : <Navigate to="/" />} />
             <Route path="/import" element={!walletData ? <ImportWallet /> : <Navigate to="/" />} />
             <Route path="/send" element={walletData ? <Send /> : <Navigate to="/" />} />

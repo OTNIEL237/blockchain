@@ -182,7 +182,7 @@ const Dashboard = () => {
                     const iconConfig = ASSET_ICONS[ticker];
                     
                     return (
-                        <Link to={`/receive?token=${ticker}`} key={ticker} className="token-item">
+                        <Link to={`/token/${ticker}`} key={ticker} className="token-item">
                             <div className="token-icon" style={{backgroundColor: iconConfig.color}}>
                                 <TokenLogo ticker={ticker} />
                             </div>
