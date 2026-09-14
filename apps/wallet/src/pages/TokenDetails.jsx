@@ -105,14 +105,18 @@ const TokenDetails = () => {
                     {history.map((tx, index) => (
                         <div key={tx.hash || index} className="activity-item">
                             <div className="activity-icon"><BarChart3 size={18} /></div>
-                            <div><strong>{tx.type} {ticker}</strong><div className="muted-text">{new Date(tx.timestamp).toLocaleString()}</div></div>
+                            <div>
+                                <strong>{tx.type} {ticker}</strong>
+                                <div className="muted-text">{new Date(tx.timestamp).toLocaleString()}</div>
+                                {tx.hash && <div className="muted-text token-transaction-hash">Hash : {tx.hash}</div>}
+                            </div>
                             <strong className={tx.type === 'Envoyé' ? 'negative' : 'positive'}>{tx.type === 'Envoyé' ? '-' : '+'}{tx.amount} {ticker}</strong>
                         </div>
                     ))}
                 </div>
             </section>
 
-            <div className="token-action-row token-action-row-bottom">
+            <div className="token-action-row token-action-row-bottom" aria-label={`Actions ${ticker}`}>
                 <Link to={`/send?token=${ticker}`} className="btn btn-primary"><ArrowUpRight size={18} /> Envoyer</Link>
                 <Link to={`/receive?token=${ticker}`} className="btn btn-secondary"><ArrowDownLeft size={18} /> Recevoir</Link>
             </div>
