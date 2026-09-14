@@ -15,6 +15,9 @@ export default defineConfig({
       globals: { Buffer: true }
     })
   ],
+  optimizeDeps: {
+    exclude: ['tiny-secp256k1']
+  },
   server: {
     proxy: {
       '/api': 'http://localhost:3000'
