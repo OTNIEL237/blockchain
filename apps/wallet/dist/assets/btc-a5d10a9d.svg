@@ -1,0 +1,13 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="btcGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F7931A"/>
+      <stop offset="100%" stop-color="#E07A00"/>
+    </linearGradient>
+  </defs>
+  <rect width="200" height="200" rx="32" fill="url(#btcGradient)"/>
+  <g transform="translate(100,100)">
+    <text x="0" y="14" font-size="90" font-weight="700" text-anchor="middle" fill="white" font-family="Helvetica, Arial">₿</text>
+    <path d="M -28 -52 L -28 52 M 28 -52 L 28 52" stroke="rgba(255,255,255,0.14)" stroke-width="10" stroke-linecap="round"/>
+  </g>
+</svg>

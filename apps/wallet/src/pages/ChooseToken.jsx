@@ -1,19 +1,24 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { TOKEN_NAMES, TOKEN_LOGOS } from '../utils/tokenLogos';
 import { TOKEN_CONFIG } from '../utils/tokenConfig';
 
 const TOKENS = ['SGC','BTC','ETH','USDT','SOL'];
 
 const ChooseToken = () => {
-  const [selected, setSelected] = useState('SGC');
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const requestedToken = searchParams.get('token');
+  const initialToken = TOKENS.includes(requestedToken) ? requestedToken : 'SGC';
+  const [selected, setSelected] = useState(initialToken);
 
   // Determine whether this chooser is for sending or receiving based on path
   const action = location.pathname.startsWith('/receive') ? 'receive' : 'send';
 
-  const [selectedNetwork, setSelectedNetwork] = useState(TOKEN_CONFIG[selected].defaultNetwork);
+  const requestedNetwork = searchParams.get('network');
+  const initialNetwork = TOKEN_CONFIG[initialToken].networks.find(network => network.toLowerCase() === requestedNetwork?.toLowerCase()) || TOKEN_CONFIG[initialToken].defaultNetwork;
+  const [selectedNetwork, setSelectedNetwork] = useState(initialNetwork);
 
   // update selected network when token changes
   React.useEffect(() => {
@@ -21,7 +26,8 @@ const ChooseToken = () => {
   }, [selected]);
 
   const handleConfirm = () => {
-    navigate(`/${action}/confirm?token=${selected}&network=${encodeURIComponent(selectedNetwork)}`);
+    const network = selected === 'USDT' && selectedNetwork === 'Solana' ? 'solana' : selected === 'USDT' ? 'ethereum' : selectedNetwork;
+    navigate(`/${action}/confirm?token=${selected}&network=${encodeURIComponent(network)}`);
   };
 
   return (
