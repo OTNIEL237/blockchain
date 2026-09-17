@@ -110,7 +110,7 @@ const TokenDetail = () => {
       </div>
 
       <div className="token-detail-actions">
-        <button type="button" className="token-action-button token-action-primary" onClick={() => navigate(`/send?token=${token}&network=${encodeURIComponent(network)}`)}>
+        <button type="button" className="token-action-button token-action-primary" onClick={() => navigate(`/send/confirm?token=${token}&network=${encodeURIComponent(network)}`)}>
           <ArrowUpRight size={22} />
           Envoyer
         </button>

@@ -11,8 +11,9 @@ import { toast } from 'react-toastify';
 
 const Send = () => {
     const [searchParams, setSearchParams] = useSearchParams();
-    const [token, setToken] = useState(searchParams.get('token') || 'SGC');
-    const [usdtNetwork, setUsdtNetwork] = useState(searchParams.get('network') || 'ethereum');
+    const [token] = useState(searchParams.get('token') || 'SGC');
+    const initialUsdtNetwork = searchParams.get('network')?.toLowerCase() === 'solana' ? 'solana' : 'ethereum';
+    const [usdtNetwork, setUsdtNetwork] = useState(initialUsdtNetwork);
     const { walletData } = useContext(WalletContext);
     const navigate = useNavigate();
     
@@ -23,7 +24,6 @@ const Send = () => {
     const [ethBalanceForGas, setEthBalanceForGas] = useState(null);
     const [balanceLoading, setBalanceLoading] = useState(true);
 
-    // Charger le solde actuel au chargement de la page
     useEffect(() => {
         const loadBalance = async () => {
             if (!walletData) return;

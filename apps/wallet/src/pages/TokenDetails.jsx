@@ -117,7 +117,7 @@ const TokenDetails = () => {
             </section>
 
             <div className="token-action-row token-action-row-bottom" aria-label={`Actions ${ticker}`}>
-                <Link to={`/send?token=${ticker}`} className="btn btn-primary"><ArrowUpRight size={18} /> Envoyer</Link>
+                <Link to={`/send/confirm?token=${ticker}`} className="btn btn-primary"><ArrowUpRight size={18} /> Envoyer</Link>
                 <Link to={`/receive?token=${ticker}`} className="btn btn-secondary"><ArrowDownLeft size={18} /> Recevoir</Link>
             </div>
         </div>

@@ -95065,7 +95065,8 @@ Message: ${n}.
       ])
     };
   }, Zhe = () => {
-    const [t, e] = v4(), [r, n] = oe.useState(t.get("token") || "SGC"), [a, i] = oe.useState(t.get("network") || "ethereum"), { walletData: s } = oe.useContext(Po), l = no(), [c, p] = oe.useState(""), [h, g] = oe.useState(""), [y, E] = oe.useState(false), [A, S] = oe.useState(null), [C, M] = oe.useState(null), [B, R] = oe.useState(true);
+    var _a10;
+    const [t, e] = v4(), [r] = oe.useState(t.get("token") || "SGC"), n = ((_a10 = t.get("network")) == null ? void 0 : _a10.toLowerCase()) === "solana" ? "solana" : "ethereum", [a, i] = oe.useState(n), { walletData: s } = oe.useContext(Po), l = no(), [c, p] = oe.useState(""), [h, g] = oe.useState(""), [y, E] = oe.useState(false), [A, S] = oe.useState(null), [C, M] = oe.useState(null), [B, R] = oe.useState(true);
     oe.useEffect(() => {
       (async () => {
         if (s) {
@@ -95276,7 +95277,7 @@ Message: ${n}.
                             value: O,
                             checked: r === O,
                             onChange: () => {
-                              n(O), e({
+                              setToken(O), e({
                                 token: O
                               });
                             }
@@ -97522,7 +97523,7 @@ Hash: ` + C.hash), l("");
           "aria-label": `Actions ${e}`,
           children: [
             ee.jsxs(ei, {
-              to: `/send?token=${e}`,
+              to: `/send/confirm?token=${e}`,
               className: "btn btn-primary",
               children: [
                 ee.jsx(nN, {
