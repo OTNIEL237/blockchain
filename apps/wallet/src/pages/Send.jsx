@@ -4,6 +4,7 @@ import { WalletContext } from '../context/WalletContext';
 import { NETWORKS } from '../config';
 import { sendETHTransaction, sendUSDTTransaction, fetchETHBalance, fetchUSDTBalance } from '../services/ethService';
 import { sendSOLTransaction, fetchSOLBalance } from '../services/solService';
+import { sendSolanaUSDTTransaction, fetchSolanaUSDTBalance } from '../services/usdtService';
 import { sendSGCTransaction, fetchSGCBalance } from '../services/sgcService';
 import { sendBTCTransaction, fetchBTCBalance } from '../services/btcService';
 import { toast } from 'react-toastify';
@@ -11,6 +12,7 @@ import { toast } from 'react-toastify';
 const Send = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [token, setToken] = useState(searchParams.get('token') || 'SGC');
+    const [usdtNetwork, setUsdtNetwork] = useState(searchParams.get('network') || 'ethereum');
     const { walletData } = useContext(WalletContext);
     const navigate = useNavigate();
     
@@ -35,10 +37,15 @@ const Send = () => {
                 } else if (token === 'ETH') {
                     bal = await fetchETHBalance(walletData.wallets.ETH.address);
                 } else if (token === 'USDT') {
-                    bal = await fetchUSDTBalance(walletData.wallets.ETH.address);
-                    // Pour USDT, on a aussi besoin de savoir si l'utilisateur a de l'ETH pour les frais de gas
-                    const ethBal = await fetchETHBalance(walletData.wallets.ETH.address);
-                    setEthBalanceForGas(parseFloat(ethBal));
+                    if (usdtNetwork === 'solana') {
+                        bal = await fetchSolanaUSDTBalance(walletData.wallets.SOL.address);
+                        const solBal = await fetchSOLBalance(walletData.wallets.SOL.address);
+                        setEthBalanceForGas(parseFloat(solBal));
+                    } else {
+                        bal = await fetchUSDTBalance(walletData.wallets.ETH.address);
+                        const ethBal = await fetchETHBalance(walletData.wallets.ETH.address);
+                        setEthBalanceForGas(parseFloat(ethBal));
+                    }
                 } else if (token === 'SOL') {
                     bal = await fetchSOLBalance(walletData.wallets.SOL.address);
                 }
@@ -50,7 +57,7 @@ const Send = () => {
             setBalanceLoading(false);
         };
         loadBalance();
-    }, [walletData, token]);
+    }, [walletData, token, usdtNetwork]);
 
     const handleSend = async (e) => {
         e.preventDefault();
@@ -73,9 +80,9 @@ const Send = () => {
             return;
         }
 
-        // Pour USDT : vérifier qu'il y a de l'ETH pour les frais de gas
+        // USDT utilise ETH ou SOL pour payer les frais selon le réseau choisi.
         if (token === 'USDT' && ethBalanceForGas !== null && ethBalanceForGas <= 0) {
-            toast.error(`❌ Solde insuffisant (ETH requis pour les frais).`);
+            toast.error(`❌ Solde insuffisant (${usdtNetwork === 'solana' ? 'SOL' : 'ETH'} requis pour les frais).`);
             return;
         }
 
@@ -90,12 +97,14 @@ const Send = () => {
 
         try {
             let result;
-            const privateKey = walletData.wallets[token === 'USDT' ? 'ETH' : token].privateKey;
+            const privateKey = walletData.wallets[token === 'USDT' ? (usdtNetwork === 'solana' ? 'SOL' : 'ETH') : token].privateKey;
 
             if (token === 'ETH') {
                 result = await sendETHTransaction(privateKey, toAddress, amount);
             } else if (token === 'USDT') {
-                result = await sendUSDTTransaction(privateKey, toAddress, amount);
+                result = usdtNetwork === 'solana'
+                    ? await sendSolanaUSDTTransaction(privateKey, toAddress, amount)
+                    : await sendUSDTTransaction(privateKey, toAddress, amount);
             } else if (token === 'SOL') {
                 result = await sendSOLTransaction(privateKey, toAddress, amount);
             } else if (token === 'SGC') {
@@ -115,7 +124,7 @@ const Send = () => {
             setTimeout(() => navigate('/'), 3000);
         } catch (error) {
             console.error(error);
-            toast.error(`❌ Solde insuffisant.`);
+            toast.error(error.message || `❌ Transaction impossible.`);
         }
         setLoading(false);
     };
@@ -141,7 +150,7 @@ const Send = () => {
                     </span>
                     {token === 'USDT' && !balanceLoading && (
                         <div style={{fontSize: '0.8rem', color: 'var(--muted-text)', marginTop: '4px'}}>
-                            ETH pour gas : {ethBalanceForGas !== null ? ethBalanceForGas : '...'} ETH
+                            {usdtNetwork === 'solana' ? 'SOL' : 'ETH'} pour gas : {ethBalanceForGas !== null ? ethBalanceForGas : '...'} {usdtNetwork === 'solana' ? 'SOL' : 'ETH'}
                             {ethBalanceForGas !== null && ethBalanceForGas <= 0 && (
                                 <span style={{color: 'var(--danger-color)', marginLeft: '8px'}}>⚠️ Pas d'ETH pour les frais !</span>
                             )}
@@ -179,6 +188,28 @@ const Send = () => {
                             <option value="SOL">Solana (SOL)</option>
                         </select>
                     </div>
+                    {token === 'USDT' && (
+                        <div style={{marginBottom:'1.5rem'}}>
+                            <label style={{display:'block', marginBottom:'8px', fontWeight:'bold', color:'var(--muted-text)'}}>
+                                Réseau USDT :
+                            </label>
+                            <select
+                                value={usdtNetwork}
+                                onChange={(e) => {
+                                    setUsdtNetwork(e.target.value);
+                                    setSearchParams({ token, network: e.target.value });
+                                }}
+                                style={{
+                                    appearance:'auto', padding:'8px 12px', width:'auto', minWidth:'200px',
+                                    borderRadius:'8px', background:'var(--bg-color)', color:'var(--text-color)',
+                                    border:'1px solid var(--border-color)', fontSize:'0.95rem', outline:'none', cursor:'pointer'
+                                }}
+                            >
+                                <option value="ethereum">Ethereum (ERC-20)</option>
+                                <option value="solana">Solana (SPL)</option>
+                            </select>
+                        </div>
+                    )}
                     <div style={{marginBottom: '1.5rem'}}>
                         <label style={{display:'block', marginBottom:'8px', fontWeight: 'bold', color: 'var(--muted-text)'}}>Adresse de destination :</label>
                         <input 
