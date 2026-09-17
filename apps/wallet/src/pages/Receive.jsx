@@ -9,12 +9,13 @@ import { toast } from 'react-toastify';
 const Receive = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [token, setToken] = React.useState(searchParams.get('token') || 'SGC');
+    const [usdtNetwork, setUsdtNetwork] = React.useState(searchParams.get('network') || 'ethereum');
     const { walletData } = useContext(WalletContext);
     const navigate = useNavigate();
     
     if (!walletData) return null;
 
-    const actualTokenKey = token === 'USDT' ? 'ETH' : token;
+    const actualTokenKey = token === 'USDT' && usdtNetwork === 'solana' ? 'SOL' : token === 'USDT' ? 'ETH' : token;
     const address = walletData.wallets[actualTokenKey].address;
 
     const handleCopy = () => {
@@ -29,33 +30,31 @@ const Receive = () => {
             <div className="card" style={{maxWidth: '500px', textAlign: 'center'}}>
                 <div style={{marginBottom: '1.5rem', textAlign: 'left'}}>
                     <label style={{display:'block', marginBottom:'8px', fontWeight: 'bold', color: 'var(--muted-text)'}}>Actif à recevoir :</label>
-                    <select 
-                        value={token} 
-                        onChange={(e) => {
-                            setToken(e.target.value);
-                            setSearchParams({ token: e.target.value });
-                        }} 
-                        style={{
-                            appearance: 'auto', 
-                            padding: '8px 12px', 
-                            width: 'auto', 
-                            minWidth: '200px',
-                            borderRadius: '8px', 
-                            background: 'var(--bg-color)', 
-                            color: 'var(--text-color)', 
-                            border: '1px solid var(--border-color)', 
-                            fontSize: '0.95rem',
-                            outline: 'none',
-                            cursor: 'pointer'
-                        }}
-                    >
-                        <option value="SGC">Sango Coin (SGC)</option>
-                        <option value="BTC">Bitcoin (BTC)</option>
-                        <option value="ETH">Ethereum (ETH)</option>
-                        <option value="USDT">Tether (USDT)</option>
-                        <option value="SOL">Solana (SOL)</option>
-                    </select>
+                    <div style={{display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(150px, 1fr))', gap:'8px'}}>
+                        {[
+                            ['SGC', 'Sango Coin'], ['BTC', 'Bitcoin'], ['ETH', 'Ethereum'],
+                            ['USDT', 'Tether'], ['SOL', 'Solana']
+                        ].map(([value, label]) => (
+                            <label key={value} style={{display:'flex', alignItems:'center', gap:'8px', padding:'10px', borderRadius:'8px', border:'1px solid var(--border-color)', background: token === value ? 'rgba(88,225,146,0.12)' : 'transparent', cursor:'pointer'}}>
+                                <input type="radio" name="receive-token" value={value} checked={token === value} onChange={() => { setToken(value); setSearchParams({ token: value }); }} />
+                                <span>{label} ({value})</span>
+                            </label>
+                        ))}
+                    </div>
                 </div>
+                {token === 'USDT' && (
+                    <div style={{marginBottom:'1.5rem', textAlign:'left'}}>
+                        <label style={{display:'block', marginBottom:'8px', fontWeight:'bold', color:'var(--muted-text)'}}>Réseau USDT :</label>
+                        <div style={{display:'flex', gap:'8px', flexWrap:'wrap'}}>
+                            {[['ethereum', 'Ethereum (ERC-20)'], ['solana', 'Solana (SPL)']].map(([value, label]) => (
+                                <label key={value} style={{display:'flex', alignItems:'center', gap:'8px', padding:'10px', borderRadius:'8px', border:'1px solid var(--border-color)', background: usdtNetwork === value ? 'rgba(88,225,146,0.12)' : 'transparent', cursor:'pointer'}}>
+                                    <input type="radio" name="receive-usdt-network" value={value} checked={usdtNetwork === value} onChange={() => { setUsdtNetwork(value); setSearchParams({ token, network: value }); }} />
+                                    <span>{label}</span>
+                                </label>
+                            ))}
+                        </div>
+                    </div>
+                )}
                 
                 <p style={{color: 'var(--muted-text)', marginBottom: '2rem'}}>
                     Utilisez l'adresse ci-dessous pour recevoir vos {token}.
